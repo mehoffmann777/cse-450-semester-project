@@ -11,4 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestingDialogue.unity
     guid: b8ac5f836b4474e4aa302b0f56b6c05a
+  - enabled: 1
+    path: Assets/Scenes/TestBattle.unity
+    guid: 12e2283bc06f54a71a3d785a35d5997d
+  - enabled: 1
+    path: Assets/Scenes/TestingCharacter.unity
+    guid: ea6ce0058393b47f5a877a7cb84f0985
   m_configObjects: {}

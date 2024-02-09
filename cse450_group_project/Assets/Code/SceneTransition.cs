@@ -10,7 +10,7 @@ public class SceneTransition : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        bundle = AssetBundle.LoadFromFile("Assets/Scenes");
+       
     }
 
     // Update is called once per frame
