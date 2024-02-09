@@ -15,9 +15,15 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //stops player from moving if there is dialogue actively happening
+        if (DialogueManager.GetInstance().dialogueIsPlaying)
+        {
+            return;
+        }
+        //CHANGE LATER: use an input manager to standardize input throughout project
         float xMov = Input.GetAxis("Horizontal");
-        float yMov = Input.GetAxis("Vertical");
+        //float yMov = Input.GetAxis("Vertical");
 
-        rgbdy.velocity = new Vector2(xMov * speed, yMov * speed);
+        rgbdy.velocity = new Vector2(xMov * speed, 0);
     }
 }
