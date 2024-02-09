@@ -15,23 +15,19 @@ public class CharacterStats : MonoBehaviour
     public TextMeshProUGUI attackText;
 
     
-    // Start is called before the first frame update
     void Start()
     {
         
 
     }
 
-    // Update is called once per frame
+   
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            Attack();
-        }
+       
     }
 
-    void Attack()
+    public void Attack()
     {
         int enemyDodge = Random.Range(0, 100);
         int criticalHit = Random.Range(0, 100);
