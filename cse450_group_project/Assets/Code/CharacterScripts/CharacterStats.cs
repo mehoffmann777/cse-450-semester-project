@@ -12,6 +12,8 @@ public class CharacterStats : MonoBehaviour
     public int strength;
     public int accuracy;
     public int luck;
+    public int movement;
+
     public TextMeshProUGUI attackText;
 
     

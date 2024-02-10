@@ -49,7 +49,7 @@ public class GridData : MonoBehaviour
         tiles = new Dictionary<Vector3, BattlefieldTile>();
         foreach (Vector3Int pos in Tilemap.cellBounds.allPositionsWithin)
         {
-            var localPlace = new Vector3Int(pos.x, pos.y, pos.z);
+            var localPlace = new Vector3Int(pos.x, pos.y, 0);
 
             if (!Tilemap.HasTile(localPlace)) continue;
 
@@ -61,17 +61,17 @@ public class GridData : MonoBehaviour
 
             var bTile = new BattlefieldTile
             {
-                localPlace = localPlace,
-                worldLocation = Tilemap.CellToWorld(localPlace),
-                tileBase = Tilemap.GetTile(localPlace),
-                tilemapMember = Tilemap,
-                name = localPlace.x + "," + localPlace.y,
-                movementCost = 1,
-                impassable = isWater
-
+                LocalPlace = localPlace,
+                WorldLocation = Tilemap.CellToWorld(localPlace),
+                TileBase = Tilemap.GetTile(localPlace),
+                TilemapMember = Tilemap,
+                Name = localPlace.x + "," + localPlace.y,
+                MovementCost = 1,
+                Impassable = isWater,
+                Character = null
             };
 
-            tiles.Add(bTile.worldLocation, bTile);
+            tiles.Add(bTile.WorldLocation, bTile);
         }
     }
 
