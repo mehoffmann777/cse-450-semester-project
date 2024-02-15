@@ -2,35 +2,106 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using TMPro;
+
 
 // Credit to: https://medium.com/@allencoded/unity-tilemaps-and-storing-individual-tile-data-8b95d87e9f32
 
 public class TesterGrid : MonoBehaviour
 {
 
+	public TMP_Text turnUI;
+
 	public GameObject enemyInfantry;
+	public GameObject allyInfantry;
 
 	private BattlefieldTile _tilePrev;
 	private BattlefieldTile _tileCur;
 
 	private GameObject _seletedCharacter;
 
+	private List<GameObject> enemyCharacters = new();
+	private List<GameObject> allyCharacters = new();
+
+	private int turnCount;
+
+	private enum BattleState {
+		PlayerTurn,
+		EnemyTurn
+	}
+
+	private BattleState battleState;
+
 	private void Start()
     {
+		battleState = BattleState.PlayerTurn;
 
-		PlaceCharacterAt(enemyInfantry, 1, 1);
-		PlaceCharacterAt(enemyInfantry, 2, 2);
-		PlaceCharacterAt(enemyInfantry, 1, 2);
+		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 1));
+		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
+		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 2));
 
+		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -5, -4));
+		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -4, -4));
+		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -3, -4));
+
+
+		turnCount = 1;
+		turnUI.text = "Turn " + turnCount.ToString();
 	}
 
 	private void Update()
 	{
-		if (Input.GetMouseButtonDown(0))
-		{
-			HandleClickAt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+		if (battleState == BattleState.PlayerTurn)
+        {
+			if (Input.GetMouseButtonDown(0))
+			{
+				HandleClickAt(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+			}
+
+			if (AllyTurnOver()) {
+				battleState = BattleState.EnemyTurn;
+			}
+
+		}
+
+		if (battleState == BattleState.EnemyTurn) {
+			turnCount++;
+			turnUI.text = "Turn " + turnCount.ToString();
+
+			print("Turn: " + turnCount);
+
+			ResetAllyCanMove();
+			battleState = BattleState.PlayerTurn;
 		}
 	}
+
+	private bool AllyTurnOver() {
+		foreach (GameObject ally in allyCharacters)
+        {
+			CharacterStats allyData = ally.GetComponent<CharacterStats>();
+
+			if (allyData.CanMove) {
+				return false;
+			}
+
+        }
+
+		return true;
+	}
+
+	private void ResetAllyCanMove() {
+		foreach (GameObject ally in allyCharacters)
+		{
+			CharacterStats allyData = ally.GetComponent<CharacterStats>();
+
+			allyData.CanMove = true;
+
+			ally.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+
+		}
+	}
+
+
 
 
 	private void HandleClickAt(Vector3 point) {
@@ -54,8 +125,13 @@ public class TesterGrid : MonoBehaviour
 
 		if(_tileCur.Character) {
 			HandleCharacterDeselect();
-			_seletedCharacter = _tileCur.Character;
-			HandleCharacterSelect();
+
+			if (_tileCur.Character.GetComponent<CharacterStats>().CanMove)
+            {
+				_seletedCharacter = _tileCur.Character;
+				HandleCharacterSelect();
+            }
+
 		}
 		else if (_seletedCharacter) {
 
@@ -81,6 +157,11 @@ public class TesterGrid : MonoBehaviour
 		location.z = -1;
 		_seletedCharacter.transform.position = location;
 
+
+		_seletedCharacter.GetComponent<CharacterStats>().CanMove = false;
+		_seletedCharacter.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
+
+
 		_tilePrev.Character = null;
 		_tileCur.Character = _seletedCharacter;
 		_seletedCharacter = null;
@@ -97,7 +178,7 @@ public class TesterGrid : MonoBehaviour
 			Color changeColor = new Color(1, 1, 1, 1);
 
 			if (tile.SelectedCharacterPathing == 1) {
-				changeColor = new Color(0.3f, 0.4f, 1, 1);
+				changeColor = new Color(0.4f, 0.5f, 1, 1);
 			}
 
 			tile.TilemapMember.SetTileFlags(tile.LocalPlace, TileFlags.None);
@@ -132,7 +213,7 @@ public class TesterGrid : MonoBehaviour
 
 		Vector3Int loc;
 
-		int mov = 3;
+		int mov = _seletedCharacter.GetComponent<CharacterStats>().movement;
 
 		_tileCur.ReachableInDistance = 0;
 		_tileCur.SelectedCharacterPathing = 1;

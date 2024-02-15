@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6491350411696373240}
   - component: {fileID: -5087664322820577383}
   m_Layer: 0
-  m_Name: EnemyInfantry
+  m_Name: AllyInfantry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1656345257, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
+  m_Sprite: {fileID: -943146839, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -97,10 +97,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
-  stamina: 5
-  strength: 5
-  accuracy: 5
-  luck: 5
+  health: 15
+  stamina: 7
+  strength: 7
+  accuracy: 4
+  luck: 7
   movement: 3
   attackText: {fileID: 0}
