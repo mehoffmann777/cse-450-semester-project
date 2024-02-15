@@ -57,7 +57,11 @@ public class GridData : MonoBehaviour
             Tile tile = (Tile) Tilemap.GetTile(localPlace);
             string spriteName = tile.sprite.name;
 
-            bool isWater = !spriteName.Equals("tilemap_packed_0") && !spriteName.Equals("tilemap_packed_1");
+            bool isRoughTerain = spriteName.Equals("tilemap_packed_108");
+
+            bool isWater = !isRoughTerain && !spriteName.Equals("tilemap_packed_0") && !spriteName.Equals("tilemap_packed_1");
+
+
 
             var bTile = new BattlefieldTile
             {
@@ -66,9 +70,11 @@ public class GridData : MonoBehaviour
                 TileBase = Tilemap.GetTile(localPlace),
                 TilemapMember = Tilemap,
                 Name = localPlace.x + "," + localPlace.y,
-                MovementCost = 1,
+                MovementCost = isRoughTerain ? 2 : 1,
                 Impassable = isWater,
-                Character = null
+                Character = null,
+                SelectedCharacterPathing = 0,
+                ReachableInDistance = int.MaxValue
             };
 
             tiles.Add(bTile.WorldLocation, bTile);

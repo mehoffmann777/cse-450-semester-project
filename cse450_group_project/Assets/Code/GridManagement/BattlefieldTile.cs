@@ -23,4 +23,8 @@ public class BattlefieldTile
     public bool Impassable { get; set; }
 
     public GameObject Character { get; set; }
+
+    public int SelectedCharacterPathing { get; set; }
+
+    public int ReachableInDistance { get; set; }
 }

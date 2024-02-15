@@ -15,7 +15,7 @@ public class TesterGrid : MonoBehaviour
 
 	private GameObject _seletedCharacter;
 
-    private void Start()
+	private void Start()
     {
 
 		PlaceCharacterAt(enemyInfantry, 1, 1);
@@ -44,6 +44,7 @@ public class TesterGrid : MonoBehaviour
 		if (tiles.TryGetValue(worldPoint, out _tileCur))
 		{
 			HandleTileClick();
+			UpdateTileShading();
 		}
 
 	}
@@ -52,23 +53,27 @@ public class TesterGrid : MonoBehaviour
 	private void HandleTileClick() {
 
 		if(_tileCur.Character) {
+			HandleCharacterDeselect();
 			_seletedCharacter = _tileCur.Character;
-			print(_seletedCharacter);
 			HandleCharacterSelect();
 		}
 		else if (_seletedCharacter) {
-			MoveCharacterTo(_tileCur.WorldLocation);
+
+			if (CharacterCanMove())
+            {
+				MoveCharacterTo(_tileCur.WorldLocation);
+            }
+
 			HandleCharacterDeselect();
 		}
-		
 
-
-		//print("Tile " + _tile.Name + " costs: " + _tile.MovementCost);
-		//_tile.TilemapMember.SetTileFlags(_tile.LocalPlace, TileFlags.None);
-
-		//Color changeColor = _tile.Impassable ? Color.red : Color.green;
-		//_tile.TilemapMember.SetColor(_tile.LocalPlace, changeColor);
+		UpdateTileShading();
 	}
+
+	private bool CharacterCanMove() {
+		return _tileCur.SelectedCharacterPathing == 1;
+	}
+
 
 	private void MoveCharacterTo(Vector3 location) {
 		location.x += 0.5f;
@@ -76,25 +81,120 @@ public class TesterGrid : MonoBehaviour
 		location.z = -1;
 		_seletedCharacter.transform.position = location;
 
-
 		_tilePrev.Character = null;
 		_tileCur.Character = _seletedCharacter;
 		_seletedCharacter = null;
 	}
 
 	private void HandleCharacterSelect() {
-		print("ToBlue");
-		print(_tileCur);
-		_tileCur.TilemapMember.SetTileFlags(_tileCur.LocalPlace, TileFlags.None);
-		_tileCur.TilemapMember.SetColor(_tileCur.LocalPlace, Color.blue);
-		_tileCur.TilemapMember.GetColor(_tileCur.LocalPlace);
+		TagReachableBySelectedChar();
     }
+
+	private void UpdateTileShading() {
+		foreach (var tile in GridData.instance.tiles.Values)
+		{
+
+			Color changeColor = new Color(1, 1, 1, 1);
+
+			if (tile.SelectedCharacterPathing == 1) {
+				changeColor = new Color(0.3f, 0.4f, 1, 1);
+			}
+
+			tile.TilemapMember.SetTileFlags(tile.LocalPlace, TileFlags.None);
+			tile.TilemapMember.SetColor(tile.LocalPlace, changeColor);
+
+		}
+	}
+
+	private void AddTileDecreasing(LinkedList<BattlefieldTile> list, BattlefieldTile tile) {
+		LinkedListNode<BattlefieldTile> n = list.First;
+
+		if (n == null) { list.AddFirst(tile); return; }
+
+
+		while (tile.ReachableInDistance < n.Value.ReachableInDistance) {
+			if (n.Next == null) {
+				list.AddAfter(n, tile);
+				return;
+			}
+
+			n = n.Next;
+		}
+
+		list.AddBefore(n, tile);
+	}
+
+
+	private void TagReachableBySelectedChar() {
+		LinkedList<BattlefieldTile> queue = new();
+
+		var tiles = GridData.instance.tiles;
+
+		Vector3Int loc;
+
+		int mov = 3;
+
+		_tileCur.ReachableInDistance = 0;
+		_tileCur.SelectedCharacterPathing = 1;
+
+		queue.AddFirst(_tileCur);
+
+		while (queue.Count > 0) {
+			LinkedListNode<BattlefieldTile> thisTile = queue.Last;
+			queue.RemoveLast();
+
+			loc = thisTile.Value.LocalPlace;
+
+			Vector3Int upLoc = loc;
+			upLoc.y++;
+
+			Vector3Int downLoc = loc;
+			downLoc.y--;
+
+			Vector3Int rightLoc = loc;
+			rightLoc.x++;
+
+			Vector3Int leftLoc = loc;
+			leftLoc.x--;
+
+			Vector3Int[] locToCheck = { upLoc, downLoc, rightLoc, leftLoc };
+
+			BattlefieldTile tileToCheck;
+
+			foreach (Vector3Int possibleLoc in locToCheck) {
+
+				if (tiles.TryGetValue(possibleLoc, out tileToCheck))
+				{
+					if (tileToCheck.SelectedCharacterPathing != 0) { continue; }
+
+					tileToCheck.ReachableInDistance = thisTile.Value.ReachableInDistance + tileToCheck.MovementCost;
+					
+					if (tileToCheck.ReachableInDistance > mov) { continue; }
+
+					if (tileToCheck.Impassable) { continue; }
+
+					tileToCheck.SelectedCharacterPathing = 1;
+
+					if (tileToCheck.Character != null) { tileToCheck.SelectedCharacterPathing++; }
+					
+
+					AddTileDecreasing(queue, tileToCheck);
+				}
+			}
+		}
+	}
+
+
 
 	private void HandleCharacterDeselect()
 	{
-		Color changeColor = Color.clear;
-		_tilePrev.TilemapMember.SetTileFlags(_tilePrev.LocalPlace, TileFlags.None);
-		_tilePrev.TilemapMember.SetColor(_tilePrev.LocalPlace, changeColor);
+		// Reset BFS
+		foreach (var tile in GridData.instance.tiles.Values)
+		{
+			tile.ReachableInDistance = int.MaxValue;
+			tile.SelectedCharacterPathing = 0;
+		}
+
 	}
 
 	private GameObject PlaceCharacterAt(GameObject gameObject, int x, int y)
