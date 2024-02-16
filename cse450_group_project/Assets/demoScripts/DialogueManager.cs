@@ -4,9 +4,12 @@ using UnityEngine;
 using TMPro;
 using Ink.Runtime;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class DialogueManager : MonoBehaviour
 {
+
     [Header("Choices UI")]
     [SerializeField] private GameObject[] choices;
     private TextMeshProUGUI[] choicesText;
@@ -14,11 +17,17 @@ public class DialogueManager : MonoBehaviour
     [Header("Dilaogue UI")]
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private Image pictureBox;
 
     [Header("Finnicky Timing Things")]
     [SerializeField] private float bufferSpeedPostDialogue;
 
+    [Header("Character Art: Match name element indices to cooresponding pictures ")]
+    [SerializeField] string[] char_names;
+    [SerializeField] Sprite[] char_pictures;
+ 
     private Story currentStory;
+    private Dictionary<string, Sprite> characterArtMap = new Dictionary<string, Sprite>();
     //the weird notation here means that this is read only for external files
     public bool dialogueIsPlaying { get; private set; }
 
@@ -32,6 +41,14 @@ public class DialogueManager : MonoBehaviour
             Debug.LogWarning("Found more than one Dialogue Manager in the Scene");
         }
         instance = this;
+
+        int i = 0;
+        foreach (string name in char_names)
+        {
+            characterArtMap.Add(name, char_pictures[i]);
+            i++;
+        }
+        
     }
 
     public static DialogueManager GetInstance()
@@ -73,6 +90,7 @@ public class DialogueManager : MonoBehaviour
 
     public void EnterDilaogueMode(TextAsset inkJSON)
     {
+        Debug.Log("dialogue mode entered from dialogue manager");
         currentStory = new Story(inkJSON.text);
         dialogueIsPlaying = true;
         dialoguePanel.SetActive(true);
@@ -89,14 +107,41 @@ public class DialogueManager : MonoBehaviour
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
+        SceneManager.LoadScene("TestBattle");
     }
     private void ContinueStory()
     {
         //built in method that determines if the story has anything left to show
         if (currentStory.canContinue)
         {
-            dialogueText.text = currentStory.Continue();
-
+            string nextDialogueToDisplay = currentStory.Continue();
+            string name = "";
+            //extract the first word from the dialogue. This will always be the character name.
+            for(int i = 0; i < nextDialogueToDisplay.Length; i++)
+            {
+                if (nextDialogueToDisplay[i] == ' ' || nextDialogueToDisplay[i] == ':')
+                {
+                    if(i == 1)
+                    {
+                        Debug.LogError("Line of Dialogue with space in front given");
+                    }
+                    break;
+                }
+                else
+                {
+                    name += nextDialogueToDisplay[i];
+                }
+            }
+            dialogueText.text = nextDialogueToDisplay;
+            Sprite result;
+            if(characterArtMap.TryGetValue(name, out result))
+            {
+                pictureBox.sprite = result;
+            }
+            else
+            {
+                Debug.LogWarning("no picture found under the name: " + name);
+            }
             // will present the choices if needed
             DisplayChoices();
         }
