@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using TMPro;
 
-
 // Credit to: https://medium.com/@allencoded/unity-tilemaps-and-storing-individual-tile-data-8b95d87e9f32
 
 public class TesterGrid : MonoBehaviour
@@ -19,6 +18,8 @@ public class TesterGrid : MonoBehaviour
 	private BattlefieldTile _tileCur;
 
 	private GameObject _seletedCharacter;
+
+	private List<Vector3> validMovementLocations = new List<Vector3>();
 
 	private List<GameObject> enemyCharacters = new();
 	private List<GameObject> allyCharacters = new();
@@ -65,15 +66,53 @@ public class TesterGrid : MonoBehaviour
 		}
 
 		if (battleState == BattleState.EnemyTurn) {
+
+			RandomEnemyMovement();
+
+
 			turnCount++;
 			turnUI.text = "Turn " + turnCount.ToString();
-
-			print("Turn: " + turnCount);
 
 			ResetAllyCanMove();
 			battleState = BattleState.PlayerTurn;
 		}
 	}
+
+	private void RandomEnemyMovement() {
+
+		foreach (BattlefieldTile tile in GridData.instance.tiles.Values) {
+			GameObject character = tile.Character;
+
+			if (character == null) { continue; }
+
+			CharacterStats characterStats = character.GetComponent<CharacterStats>();
+
+			if (characterStats == null) { continue; }
+
+			if (characterStats.Team == 0) { continue; }
+
+			if (!characterStats.CanMove) { continue; }
+
+			_tileCur = tile;
+			_seletedCharacter = character;
+
+			TagReachableBySelectedChar();
+
+			int movementChoiceIndex = Random.Range(0, validMovementLocations.Count);
+			Vector3 movementChoice = validMovementLocations[movementChoiceIndex];
+
+			_tilePrev = _tileCur;
+
+			GridData.instance.tiles.TryGetValue(movementChoice, out _tileCur);
+			MoveCharacterTo(movementChoice);
+
+			_seletedCharacter = null;
+			HandleCharacterDeselect();
+		}
+
+		ResetEnemyCanMove();
+	}
+
 
 	private bool AllyTurnOver() {
 		foreach (GameObject ally in allyCharacters)
@@ -101,7 +140,18 @@ public class TesterGrid : MonoBehaviour
 		}
 	}
 
+	private void ResetEnemyCanMove()
+	{
+		foreach (GameObject enemy in enemyCharacters)
+		{
+			CharacterStats enemyData = enemy.GetComponent<CharacterStats>();
 
+			enemyData.CanMove = true;
+
+			enemy.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+
+		}
+	}
 
 
 	private void HandleClickAt(Vector3 point) {
@@ -122,25 +172,33 @@ public class TesterGrid : MonoBehaviour
 
 
 	private void HandleTileClick() {
+		print(_seletedCharacter);
+		print(_tileCur.Character);
 
-		if(_tileCur.Character) {
-			HandleCharacterDeselect();
 
-			if (_tileCur.Character.GetComponent<CharacterStats>().CanMove)
-            {
-				_seletedCharacter = _tileCur.Character;
-				HandleCharacterSelect();
-            }
-
-		}
-		else if (_seletedCharacter) {
+		if (_seletedCharacter) {
 
 			if (CharacterCanMove())
             {
 				MoveCharacterTo(_tileCur.WorldLocation);
             }
 
+			_seletedCharacter = null;
 			HandleCharacterDeselect();
+		}
+		else if (_tileCur.Character)
+		{
+			CharacterStats stats = _tileCur.Character.GetComponent<CharacterStats>();
+
+			_seletedCharacter = null;
+			HandleCharacterDeselect();
+
+			if (stats.Team == 0 && stats.CanMove)
+			{
+				_seletedCharacter = _tileCur.Character;
+				HandleCharacterSelect();
+			}
+
 		}
 
 		UpdateTileShading();
@@ -164,7 +222,6 @@ public class TesterGrid : MonoBehaviour
 
 		_tilePrev.Character = null;
 		_tileCur.Character = _seletedCharacter;
-		_seletedCharacter = null;
 	}
 
 	private void HandleCharacterSelect() {
@@ -213,10 +270,12 @@ public class TesterGrid : MonoBehaviour
 
 		Vector3Int loc;
 
-		int mov = _seletedCharacter.GetComponent<CharacterStats>().movement;
+		CharacterStats thisCharStats = _seletedCharacter.GetComponent<CharacterStats>();
+		int mov = thisCharStats.movement;
 
 		_tileCur.ReachableInDistance = 0;
 		_tileCur.SelectedCharacterPathing = 1;
+		validMovementLocations.Add(_tileCur.LocalPlace);
 
 		queue.AddFirst(_tileCur);
 
@@ -248,23 +307,29 @@ public class TesterGrid : MonoBehaviour
 				{
 					if (tileToCheck.SelectedCharacterPathing != 0) { continue; }
 
+					if (tileToCheck.Impassable) { continue; }
+
+					//Cannot move through other team
+					if (tileToCheck.Character && tileToCheck.Character.GetComponent<CharacterStats>().Team != thisCharStats.Team) { continue; }	
+
 					tileToCheck.ReachableInDistance = thisTile.Value.ReachableInDistance + tileToCheck.MovementCost;
 					
 					if (tileToCheck.ReachableInDistance > mov) { continue; }
 
-					if (tileToCheck.Impassable) { continue; }
 
-					tileToCheck.SelectedCharacterPathing = 1;
-
-					if (tileToCheck.Character != null) { tileToCheck.SelectedCharacterPathing++; }
-					
+					if (tileToCheck.Character != null) {
+						tileToCheck.SelectedCharacterPathing = 2;
+					}
+					else {
+						tileToCheck.SelectedCharacterPathing = 1;
+						validMovementLocations.Add(tileToCheck.LocalPlace);
+					}
 
 					AddTileDecreasing(queue, tileToCheck);
 				}
 			}
 		}
 	}
-
 
 
 	private void HandleCharacterDeselect()
@@ -275,6 +340,8 @@ public class TesterGrid : MonoBehaviour
 			tile.ReachableInDistance = int.MaxValue;
 			tile.SelectedCharacterPathing = 0;
 		}
+
+		validMovementLocations.Clear();
 
 	}
 

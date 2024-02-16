@@ -15,6 +15,8 @@ public class CharacterStats : MonoBehaviour
     public int movement;
 
     public bool CanMove = true;
+    public int Team;
+
 
     public TextMeshProUGUI attackText;
 

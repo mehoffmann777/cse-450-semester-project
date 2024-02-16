@@ -103,4 +103,6 @@ MonoBehaviour:
   accuracy: 5
   luck: 5
   movement: 3
+  CanMove: 1
+  Team: 1
   attackText: {fileID: 0}
