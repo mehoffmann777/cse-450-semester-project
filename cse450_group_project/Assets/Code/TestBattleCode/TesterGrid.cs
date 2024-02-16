@@ -33,6 +33,8 @@ public class TesterGrid : MonoBehaviour
 
 	private BattleState battleState;
 
+	private GameObject sceneManager;
+
 	private void Start()
     {
 		battleState = BattleState.PlayerTurn;
@@ -48,6 +50,8 @@ public class TesterGrid : MonoBehaviour
 
 		turnCount = 1;
 		turnUI.text = "Turn " + turnCount.ToString();
+
+		sceneManager = GameObject.Find("SceneManager");
 	}
 
 	private void Update()
@@ -222,6 +226,12 @@ public class TesterGrid : MonoBehaviour
 
 		_tilePrev.Character = null;
 		_tileCur.Character = _seletedCharacter;
+<<<<<<< Updated upstream
+=======
+		_seletedCharacter = null;
+
+		sceneManager.GetComponent<SceneTransition>().loadCombat();
+>>>>>>> Stashed changes
 	}
 
 	private void HandleCharacterSelect() {
