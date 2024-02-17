@@ -185,20 +185,21 @@ public class TesterGrid : MonoBehaviour
 
 		if (_seletedCharacter) {
 
-
+			
+			CharacterStats allyStats = _seletedCharacter.GetComponent<CharacterStats>();
+		
 			if (CharacterCanMove())
             {
 				MoveCharacterTo(_tileCur.WorldLocation);
-            } else if(_tileCur.Character)
+            } else if(_tileCur.Character && _tileCur.ReachableInDistance <= allyStats.movement)
+				
             {
 				CharacterStats stats = _tileCur.Character.GetComponent<CharacterStats>();
 				if (stats.Team != 0)
 				{
 					print("Combat!");
-					mainCamera.enabled = false;
-					combatCamera.enabled = true;
-					turnUI.enabled = false;
 					combatCamera.GetComponent<CombatManager>().StartCombat(_seletedCharacter, _tileCur.Character);
+	
 				}
 			}
 
@@ -242,7 +243,7 @@ public class TesterGrid : MonoBehaviour
 		_tilePrev.Character = null;
 		_tileCur.Character = _seletedCharacter;
 		_seletedCharacter = null;
-		turnUI.enabled = false;
+
 
 
 
@@ -334,7 +335,8 @@ public class TesterGrid : MonoBehaviour
 					if (tileToCheck.Impassable) { continue; }
 
 					//Cannot move through other team
-					if (tileToCheck.Character && tileToCheck.Character.GetComponent<CharacterStats>().Team != thisCharStats.Team) { continue; }	
+					// commented this out to allow for combat to occur
+					//if (tileToCheck.Character && tileToCheck.Character.GetComponent<CharacterStats>().Team != thisCharStats.Team) { continue; }	
 
 					tileToCheck.ReachableInDistance = thisTile.Value.ReachableInDistance + tileToCheck.MovementCost;
 					

@@ -17,24 +17,5 @@ public class CharacterStats : MonoBehaviour
 
     public bool CanMove = true;
     public int Team;
-    public bool combatDone = false;
-
-    
-
-
-    public TextMeshProUGUI attackText;
-
-    
-    void Start()
-    {
-        attackText = GameObject.Find("Attack Text").GetComponent<TextMeshProUGUI>();
-    }
-
-   
-    void Update()
-    {
-       
-    }
-
    
 }
