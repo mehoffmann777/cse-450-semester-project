@@ -23,23 +23,16 @@ public class CombatManager : MonoBehaviour
         ally.transform.position = new Vector2(25, 0);
         enemy.transform.position = new Vector2(30, 0);
 
-  
+        // coroutine is so I can use wait in attack, otherwise it cuts back
+        // to the grid before you can watch the combat
         StartCoroutine(Attack(ally, enemy, originalAllyPos, originalEnemyPos));
-        AttackDelay();
-
-        print("here");
         
     }
 
-    IEnumerator AttackDelay()
-    {
-        yield return new WaitForSecondsRealtime(7f);
-    }
-
+    // this function is HUGE and I'll prob break it up
     public IEnumerator Attack(GameObject ally, GameObject enemy, Vector3 originalAllyPos, Vector3 originalEnemyPos)
     {
         
-        print("attacking");
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
         int enemyDodge = Random.Range(0, 10);
@@ -48,6 +41,7 @@ public class CombatManager : MonoBehaviour
         {
             bool crit = allyStats.luck > criticalHit;
             int damage = (allyStats.strength * (crit ? 2 : 1)) - enemyStats.defense;
+            enemyStats.health -= damage;
             attackText.text = "Player " + (crit ? "Critical " : "") + "Hit " + damage;
         }
         else
@@ -59,12 +53,13 @@ public class CombatManager : MonoBehaviour
 
         bool encrit = enemyStats.luck > criticalHit;
         int endamage = (enemyStats.strength * (encrit ? 2 : 1)) - allyStats.defense;
+        allyStats.health -= endamage;
         attackText.text = "Enemy " + (encrit ? "Critical " : "") + "Hit " + endamage;
 
         yield return new WaitForSecondsRealtime(3f);
         allyStats.CanMove = false;
         ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
-        print("shiftback");
+        print("shift back");
         combatCamera.enabled = false;
         mainCamera.enabled = true;
 
