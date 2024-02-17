@@ -17,7 +17,8 @@ public class TesterGrid : MonoBehaviour
 	private BattlefieldTile _tilePrev;
 	private BattlefieldTile _tileCur;
 
-	private GameObject _seletedCharacter;
+	public GameObject _seletedCharacter;
+	public GameObject _enemyCharacter;
 
 	private List<Vector3> validMovementLocations = new List<Vector3>();
 
@@ -33,10 +34,13 @@ public class TesterGrid : MonoBehaviour
 
 	private BattleState battleState;
 
-	private GameObject sceneManager;
+	public Camera mainCamera;
+	public Camera combatCamera;
+	
 
 	private void Start()
     {
+		combatCamera.enabled = false;
 		battleState = BattleState.PlayerTurn;
 
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 1));
@@ -51,7 +55,6 @@ public class TesterGrid : MonoBehaviour
 		turnCount = 1;
 		turnUI.text = "Turn " + turnCount.ToString();
 
-		sceneManager = GameObject.Find("SceneManager");
 	}
 
 	private void Update()
@@ -182,10 +185,22 @@ public class TesterGrid : MonoBehaviour
 
 		if (_seletedCharacter) {
 
+
 			if (CharacterCanMove())
             {
 				MoveCharacterTo(_tileCur.WorldLocation);
-            }
+            } else if(_tileCur.Character)
+            {
+				CharacterStats stats = _tileCur.Character.GetComponent<CharacterStats>();
+				if (stats.Team != 0)
+				{
+					print("Combat!");
+					mainCamera.enabled = false;
+					combatCamera.enabled = true;
+					turnUI.enabled = false;
+					combatCamera.GetComponent<CombatManager>().StartCombat(_seletedCharacter, _tileCur.Character);
+				}
+			}
 
 			_seletedCharacter = null;
 			HandleCharacterDeselect();
@@ -226,12 +241,11 @@ public class TesterGrid : MonoBehaviour
 
 		_tilePrev.Character = null;
 		_tileCur.Character = _seletedCharacter;
-<<<<<<< Updated upstream
-=======
 		_seletedCharacter = null;
+		turnUI.enabled = false;
 
-		sceneManager.GetComponent<SceneTransition>().loadCombat();
->>>>>>> Stashed changes
+
+
 	}
 
 	private void HandleCharacterSelect() {

@@ -11,11 +11,15 @@ public class CharacterStats : MonoBehaviour
     public int stamina;
     public int strength;
     public int accuracy;
+    public int defense;
     public int luck;
     public int movement;
 
     public bool CanMove = true;
     public int Team;
+    public bool combatDone = false;
+
+    
 
 
     public TextMeshProUGUI attackText;
@@ -23,8 +27,7 @@ public class CharacterStats : MonoBehaviour
     
     void Start()
     {
-        
-
+        attackText = GameObject.Find("Attack Text").GetComponent<TextMeshProUGUI>();
     }
 
    
@@ -33,19 +36,5 @@ public class CharacterStats : MonoBehaviour
        
     }
 
-    public void Attack()
-    {
-        int enemyDodge = Random.Range(0, 100);
-        int criticalHit = Random.Range(0, 100);
-        if (accuracy > enemyDodge)
-        {
-            bool crit = luck > criticalHit;
-            int damage = strength * (crit ? 2 : 1);
-            attackText.text = (crit ? "Critical " : "") + "Hit " + damage;
-        }
-        else
-        {
-            attackText.text = "Miss";
-        }
-    }
+   
 }
