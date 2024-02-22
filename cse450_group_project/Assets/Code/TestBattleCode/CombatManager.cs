@@ -35,6 +35,7 @@ public class CombatManager : MonoBehaviour
         
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
+
         int enemyDodge = Random.Range(0, 10);
         int criticalHit = Random.Range(0, 100);
         if (allyStats.accuracy > enemyDodge)
@@ -51,12 +52,15 @@ public class CombatManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(3f);
 
-        bool encrit = enemyStats.luck > criticalHit;
-        int endamage = (enemyStats.strength * (encrit ? 2 : 1)) - allyStats.defense;
-        allyStats.health -= endamage;
-        attackText.text = "Enemy " + (encrit ? "Critical " : "") + "Hit " + endamage;
+        if (enemyStats.health > 0)
+        {
+            bool encrit = enemyStats.luck > criticalHit;
+            int endamage = (enemyStats.strength * (encrit ? 2 : 1)) - allyStats.defense;
+            allyStats.health -= endamage;
+            attackText.text = "Enemy " + (encrit ? "Critical " : "") + "Hit " + endamage;
 
-        yield return new WaitForSecondsRealtime(3f);
+            yield return new WaitForSecondsRealtime(3f);
+        }
         allyStats.CanMove = false;
         ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
         checkHealth(ally);
