@@ -42,7 +42,7 @@ public class TesterGrid : MonoBehaviour
     {
 		combatCamera.enabled = false;
 		battleState = BattleState.PlayerTurn;
-
+		
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 1));
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 2));
@@ -243,9 +243,6 @@ public class TesterGrid : MonoBehaviour
 		_tilePrev.Character = null;
 		_tileCur.Character = _seletedCharacter;
 		_seletedCharacter = null;
-
-
-
 
 	}
 

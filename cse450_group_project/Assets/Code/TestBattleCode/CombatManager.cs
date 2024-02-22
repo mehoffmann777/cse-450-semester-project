@@ -59,14 +59,30 @@ public class CombatManager : MonoBehaviour
         yield return new WaitForSecondsRealtime(3f);
         allyStats.CanMove = false;
         ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
-        print("shift back");
+        checkHealth(ally);
+        checkHealth(enemy);
         combatCamera.enabled = false;
         mainCamera.enabled = true;
 
-        ally.transform.position = originalAllyPos;
-        enemy.transform.position = originalEnemyPos;
+        if(ally)
+        {
+            ally.transform.position = originalAllyPos;
+        }
+
+        if (enemy)
+        {
+            enemy.transform.position = originalEnemyPos;
+        }
         mouse.GetComponent<TesterGrid>().enabled = true;
         turnUI.enabled = true;
 
+    }
+
+    public void checkHealth(GameObject unit)
+    {
+        if(unit.GetComponent<CharacterStats>().health <= 0)
+        {
+            unit.SetActive(false);
+        }
     }
 }
