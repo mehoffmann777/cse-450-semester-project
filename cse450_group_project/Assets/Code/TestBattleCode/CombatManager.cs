@@ -47,18 +47,26 @@ public class CombatManager : MonoBehaviour
         }
         else
         {
-            attackText.text = "Player " + "Miss";
+            attackText.text = "Player Miss";
         }
 
         yield return new WaitForSecondsRealtime(3f);
 
         if (enemyStats.health > 0)
         {
-            bool encrit = enemyStats.luck > criticalHit;
-            int endamage = (enemyStats.strength * (encrit ? 2 : 1)) - allyStats.defense;
-            allyStats.health -= endamage;
-            attackText.text = "Enemy " + (encrit ? "Critical " : "") + "Hit " + endamage;
+            int playerDodge = Random.Range(0, 10);
 
+            if (enemyStats.accuracy > playerDodge)
+            {
+                criticalHit = Random.Range(0, 100);
+                bool encrit = enemyStats.luck > criticalHit;
+                int endamage = (enemyStats.strength * (encrit ? 2 : 1)) - allyStats.defense;
+                allyStats.health -= endamage;
+                attackText.text = "Enemy " + (encrit ? "Critical " : "") + "Hit " + endamage;
+            } else
+            {
+                attackText.text = "Enemy Miss";
+            }
             yield return new WaitForSecondsRealtime(3f);
         }
         allyStats.CanMove = false;
