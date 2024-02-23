@@ -15,10 +15,10 @@ public class TesterGrid : MonoBehaviour
 	public GameObject enemyInfantry;
 	public GameObject allyInfantry;
 
-	private BattlefieldTile _tilePrev;
-	private BattlefieldTile _tileCur;
+	//private BattlefieldTile _tilePrev;
+	//private BattlefieldTile _tileCur;
 
-	private GameObject _seletedCharacter;
+	// private GameObject _seletedCharacter;
 	private GameObject _enemyCharacter;
 
 	private List<Vector3> validMovementLocations = new List<Vector3>();
@@ -35,7 +35,31 @@ public class TesterGrid : MonoBehaviour
 
 	private BattleState battleState;
 
-	private enum CharacterMovementState { }
+	private enum CharacterMovementState {
+		NoCharacterSelected,
+		CharacterSelected,
+		MoveLocationSet
+	}
+
+	private CharacterMovementState characterMovementState;
+	
+	private struct CharacterMovementData
+    {
+		public GameObject selectedCharacter;
+		public CharacterStats selectedCharacterStats;
+		public BattlefieldTile currentTile;
+		public BattlefieldTile potentialTile;
+
+		public void Reset()
+        {
+			selectedCharacter = null;
+			selectedCharacterStats = null;
+			currentTile = null;
+			potentialTile = null;
+        }
+	}
+
+	private CharacterMovementData movementData;
 
 	public Camera mainCamera;
 	public Camera combatCamera;
@@ -44,7 +68,12 @@ public class TesterGrid : MonoBehaviour
 	private void Start()
     {
 		combatCamera.enabled = false;
+		movementMenu.SetActive(false);
+
 		battleState = BattleState.PlayerTurn;
+		characterMovementState = CharacterMovementState.NoCharacterSelected;
+		movementData = new CharacterMovementData();
+
 
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 1));
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
@@ -79,9 +108,7 @@ public class TesterGrid : MonoBehaviour
 
 			RandomEnemyMovement();
 
-
-			turnCount++;
-			turnUI.text = "Turn " + turnCount.ToString();
+			turnUI.text = "Turn " + (++turnCount).ToString();
 
 			ResetAllyCanMove();
 			battleState = BattleState.PlayerTurn;
@@ -103,21 +130,20 @@ public class TesterGrid : MonoBehaviour
 
 			if (!characterStats.CanMove) { continue; }
 
-			_tileCur = tile;
-			_seletedCharacter = character;
+			movementData.currentTile = tile;
+			movementData.selectedCharacter = character;
+			movementData.selectedCharacterStats = characterStats;
 
 			TagReachableBySelectedChar();
 
 			int movementChoiceIndex = Random.Range(0, validMovementLocations.Count);
 			Vector3 movementChoice = validMovementLocations[movementChoiceIndex];
 
-			_tilePrev = _tileCur;
-
-			GridData.instance.tiles.TryGetValue(movementChoice, out _tileCur);
+			GridData.instance.tiles.TryGetValue(movementChoice, out movementData.potentialTile);
 			MoveCharacterTo(movementChoice);
 
-			_seletedCharacter = null;
-			HandleCharacterDeselect();
+			movementData.Reset();
+			HandleCharacterDeselectBFS();
 		}
 
 		ResetEnemyCanMove();
@@ -192,55 +218,61 @@ public class TesterGrid : MonoBehaviour
 		MoveMenuTo(point);
 
 		// I can see this causing issues later :)
-		_tilePrev = _tileCur;
-		if (tiles.TryGetValue(worldPoint, out _tileCur))
+		BattlefieldTile clickedTile;
+		if (tiles.TryGetValue(worldPoint, out clickedTile))
 		{
-			HandleTileClick();
+			HandleTileClick(clickedTile);
 			UpdateTileShading();
 		}
 
 	}
 
 
-	private void HandleTileClick() {
+	private void HandleTileClick(BattlefieldTile clickedTile) {
 		//print(_seletedCharacter);
 		//print(_tileCur.Character);
 
 
-		if (_seletedCharacter) {
+		if (characterMovementState == CharacterMovementState.CharacterSelected) {
 
-			
-			CharacterStats allyStats = _seletedCharacter.GetComponent<CharacterStats>();
-		
-			if (CharacterCanMove())
+					
+			if (CharacterCanMove(clickedTile))
             {
-				MoveCharacterTo(_tileCur.WorldLocation);
-            } else if(_tileCur.Character && _tileCur.ReachableInDistance <= allyStats.movement)
-				
-            {
-				CharacterStats stats = _tileCur.Character.GetComponent<CharacterStats>();
-				if (stats.Team != 0)
-				{
-					print("Combat!");
-					combatCamera.GetComponent<CombatManager>().StartCombat(_seletedCharacter, _tileCur.Character);
-	
-				}
-			}
+				movementData.potentialTile = clickedTile;
+				MoveCharacterTo(clickedTile.WorldLocation);
+            }
+			//else if(_tileCur.Character && _tileCur.ReachableInDistance <= allyStats.movement)
+			//         {
+			//	CharacterStats stats = _tileCur.Character.GetComponent<CharacterStats>();
+			//	if (stats.Team != 0)
+			//	{
+			//		print("Combat!");
+			//		combatCamera.GetComponent<CombatManager>().StartCombat(_seletedCharacter, _tileCur.Character);
 
-			_seletedCharacter = null;
-			HandleCharacterDeselect();
+			//	}
+			//}
+
+			characterMovementState = CharacterMovementState.NoCharacterSelected;
+			movementData.Reset();
+
+			HandleCharacterDeselectBFS();
 		}
-		else if (_tileCur.Character)
+		else if (clickedTile.Character)
 		{
-			CharacterStats stats = _tileCur.Character.GetComponent<CharacterStats>();
+			CharacterStats stats = clickedTile.Character.GetComponent<CharacterStats>();
 
-			_seletedCharacter = null;
-			HandleCharacterDeselect();
+			movementData.Reset();
+			HandleCharacterDeselectBFS();
 
 			if (stats.Team == 0 && stats.CanMove)
 			{
-				_seletedCharacter = _tileCur.Character;
-				HandleCharacterSelect();
+				movementData.selectedCharacter = clickedTile.Character;
+				movementData.selectedCharacterStats = stats;
+				movementData.currentTile = clickedTile;
+
+				characterMovementState = CharacterMovementState.CharacterSelected;
+
+				HandleCharacterSelectBFS();
 			}
 
 		}
@@ -248,8 +280,8 @@ public class TesterGrid : MonoBehaviour
 		UpdateTileShading();
 	}
 
-	private bool CharacterCanMove() {
-		return _tileCur.SelectedCharacterPathing == 1;
+	private bool CharacterCanMove(BattlefieldTile clickedTile) {
+		return clickedTile.SelectedCharacterPathing == 1;
 	}
 
 
@@ -257,23 +289,17 @@ public class TesterGrid : MonoBehaviour
 		location.x += 0.5f;
 		location.y += 0.5f;
 		location.z = -1;
-		_seletedCharacter.transform.position = location;
 
+		movementData.selectedCharacter.transform.position = location;
+		movementData.selectedCharacter.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
 
-		_seletedCharacter.GetComponent<CharacterStats>().CanMove = false;
-		_seletedCharacter.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
+		movementData.selectedCharacterStats.CanMove = false;
 
-
-		_tilePrev.Character = null;
-		_tileCur.Character = _seletedCharacter;
-		_seletedCharacter = null;
-
-
-
-
+		movementData.currentTile.Character = null;
+		movementData.potentialTile.Character = movementData.selectedCharacter;
 	}
 
-	private void HandleCharacterSelect() {
+	private void HandleCharacterSelectBFS() {
 		TagReachableBySelectedChar();
     }
 
@@ -319,14 +345,13 @@ public class TesterGrid : MonoBehaviour
 
 		Vector3Int loc;
 
-		CharacterStats thisCharStats = _seletedCharacter.GetComponent<CharacterStats>();
-		int mov = thisCharStats.movement;
+		int mov = movementData.selectedCharacterStats.movement;
 
-		_tileCur.ReachableInDistance = 0;
-		_tileCur.SelectedCharacterPathing = 1;
-		validMovementLocations.Add(_tileCur.LocalPlace);
+		movementData.currentTile.ReachableInDistance = 0;
+		movementData.currentTile.SelectedCharacterPathing = 1;
+		validMovementLocations.Add(movementData.currentTile.LocalPlace);
 
-		queue.AddFirst(_tileCur);
+		queue.AddFirst(movementData.currentTile);
 
 		while (queue.Count > 0) {
 			LinkedListNode<BattlefieldTile> thisTile = queue.Last;
@@ -382,7 +407,7 @@ public class TesterGrid : MonoBehaviour
 	}
 
 
-	private void HandleCharacterDeselect()
+	private void HandleCharacterDeselectBFS()
 	{
 		// Reset BFS
 		foreach (var tile in GridData.instance.tiles.Values)
@@ -392,7 +417,6 @@ public class TesterGrid : MonoBehaviour
 		}
 
 		validMovementLocations.Clear();
-
 	}
 
 	private GameObject PlaceCharacterAt(GameObject gameObject, int x, int y)
@@ -405,12 +429,14 @@ public class TesterGrid : MonoBehaviour
 
 		GameObject spawn = Instantiate(gameObject, spawnLocation, Quaternion.identity);
 
-		if (!tiles.TryGetValue(tileLocation, out _tileCur))
+		BattlefieldTile tile;
+
+		if (!tiles.TryGetValue(tileLocation, out tile))
 		{
 			return null;
 		}
 
-		_tileCur.Character = spawn;
+		tile.Character = spawn;
 
 		return spawn;
 	}
