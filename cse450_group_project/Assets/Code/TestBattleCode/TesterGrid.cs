@@ -10,6 +10,7 @@ public class TesterGrid : MonoBehaviour
 {
 
 	public TMP_Text turnUI;
+	public GameObject movementMenu;
 
 	public GameObject enemyInfantry;
 	public GameObject allyInfantry;
@@ -17,8 +18,8 @@ public class TesterGrid : MonoBehaviour
 	private BattlefieldTile _tilePrev;
 	private BattlefieldTile _tileCur;
 
-	public GameObject _seletedCharacter;
-	public GameObject _enemyCharacter;
+	private GameObject _seletedCharacter;
+	private GameObject _enemyCharacter;
 
 	private List<Vector3> validMovementLocations = new List<Vector3>();
 
@@ -33,6 +34,8 @@ public class TesterGrid : MonoBehaviour
 	}
 
 	private BattleState battleState;
+
+	private enum CharacterMovementState { }
 
 	public Camera mainCamera;
 	public Camera combatCamera;
@@ -161,11 +164,32 @@ public class TesterGrid : MonoBehaviour
 	}
 
 
+	private void MoveMenuTo(Vector3 point)
+    {
+		var rectTransform = movementMenu.GetComponent<RectTransform>();
+		var screenPoint = Camera.main.WorldToScreenPoint(point);
+
+		var screenRect = Camera.main.pixelRect;
+
+		var rectTransPoint = new Vector3(
+			screenPoint.x - screenRect.width / 2.0f,
+			screenPoint.y - screenRect.height / 2.0f,
+			screenPoint.z
+		);
+
+
+		rectTransform.SetLocalPositionAndRotation(rectTransPoint, Quaternion.identity);
+
+		//rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 100);
+		//rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 200);
+	}
+
 	private void HandleClickAt(Vector3 point) {
 		// check tile clicked
 		var worldPoint = new Vector3Int(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.y), 0);
 		var tiles = GridData.instance.tiles; // This is our Dictionary of tiles
 
+		MoveMenuTo(point);
 
 		// I can see this causing issues later :)
 		_tilePrev = _tileCur;
@@ -179,8 +203,8 @@ public class TesterGrid : MonoBehaviour
 
 
 	private void HandleTileClick() {
-		print(_seletedCharacter);
-		print(_tileCur.Character);
+		//print(_seletedCharacter);
+		//print(_tileCur.Character);
 
 
 		if (_seletedCharacter) {
