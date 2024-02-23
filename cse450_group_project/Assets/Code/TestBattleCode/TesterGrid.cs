@@ -183,7 +183,7 @@ public class TesterGrid : MonoBehaviour
 		print(_tileCur.Character);
 
 
-		if (_seletedCharacter) {
+		if (_seletedCharacter && _seletedCharacter.activeSelf) {
 
 			
 			CharacterStats allyStats = _seletedCharacter.GetComponent<CharacterStats>();
@@ -330,6 +330,8 @@ public class TesterGrid : MonoBehaviour
 					if (tileToCheck.SelectedCharacterPathing != 0) { continue; }
 
 					if (tileToCheck.Impassable) { continue; }
+
+					//if(tileToCheck.Character.activeSelf == false) { continue; }
 
 					//Cannot move through other team
 					// commented this out to allow for combat to occur
