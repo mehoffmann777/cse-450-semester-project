@@ -101,9 +101,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 15
   stamina: 7
-  strength: 7
-  accuracy: 4
-  defense: 0
+  strength: 10
+  accuracy: 5
+  defense: 3
   luck: 7
   movement: 3
   CanMove: 1
