@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 using TMPro;
 
@@ -38,7 +39,8 @@ public class TesterGrid : MonoBehaviour
 	private enum CharacterMovementState {
 		NoCharacterSelected,
 		CharacterSelected,
-		MoveLocationSet
+		MoveLocationSet,
+		Attacking
 	}
 
 	private CharacterMovementState characterMovementState;
@@ -63,12 +65,16 @@ public class TesterGrid : MonoBehaviour
 
 	public Camera mainCamera;
 	public Camera combatCamera;
-	
+
+	private void PressedPrint()
+    {
+		print("Clicked");
+		movementMenu.SetActive(false);
+	}
 
 	private void Start()
     {
 		combatCamera.enabled = false;
-		movementMenu.SetActive(false);
 
 		battleState = BattleState.PlayerTurn;
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
@@ -82,6 +88,25 @@ public class TesterGrid : MonoBehaviour
 		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -5, -4));
 		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -4, -4));
 		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -3, -4));
+
+		movementMenu.SetActive(false);
+		Button[] buttons = movementMenu.GetComponentsInChildren<Button>();
+
+		foreach (Button button in buttons)
+        {
+			if (button.name.Equals("CancelButton"))
+			{
+				button.onClick.AddListener(CancelMovement);
+			}
+			else if (button.name.Equals("WaitButton"))
+			{
+				button.onClick.AddListener(WaitMovement);
+			}
+			else if (button.name.Equals("AttackButton"))
+            {
+				button.onClick.AddListener(AttackMovement);
+            }
+        }
 
 
 		turnCount = 1;
@@ -141,6 +166,7 @@ public class TesterGrid : MonoBehaviour
 
 			GridData.instance.tiles.TryGetValue(movementChoice, out movementData.potentialTile);
 			MoveCharacterTo(movementChoice);
+			CharacterTurnOver();
 
 			movementData.Reset();
 			HandleCharacterDeselectBFS();
@@ -210,14 +236,43 @@ public class TesterGrid : MonoBehaviour
 		//rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 200);
 	}
 
+
+	/*
+	 * Positions menu in the direction opposite movement. There are issues when moving on the 
+	 * top or bottom row. This will be tweaked going forward, but works well enough now to keep the menu 
+	 * out no on top of important enemies.
+	 */
+	private Vector3 MenuPositionAdjust()
+    {
+		Vector3 tileSize = movementData.potentialTile.TilemapMember.cellSize;
+		Vector3 tileChange = movementData.potentialTile.WorldLocation - movementData.currentTile.WorldLocation;
+		tileChange.Normalize();
+
+		Vector3 finalPoint = movementData.potentialTile.WorldLocation + 0.5f * tileSize;
+
+		if (Mathf.Abs(tileChange.x) > Mathf.Abs(tileChange.y)) {
+			finalPoint.x -= 2f * tileChange.x;
+		}
+		else
+        {
+			finalPoint.y -= 2.1f * tileChange.y;
+		}
+
+
+		return finalPoint;
+    }
+
 	private void HandleClickAt(Vector3 point) {
+
+		if (characterMovementState == CharacterMovementState.MoveLocationSet)
+		{
+			return;
+		}
+
 		// check tile clicked
 		var worldPoint = new Vector3Int(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.y), 0);
 		var tiles = GridData.instance.tiles; // This is our Dictionary of tiles
 
-		MoveMenuTo(point);
-
-		// I can see this causing issues later :)
 		BattlefieldTile clickedTile;
 		if (tiles.TryGetValue(worldPoint, out clickedTile))
 		{
@@ -227,11 +282,49 @@ public class TesterGrid : MonoBehaviour
 
 	}
 
+	private void CancelMovement() {
+		MoveCharacterBackTo(movementData.currentTile.WorldLocation);
+
+		characterMovementState = CharacterMovementState.NoCharacterSelected;
+		movementData.Reset();
+		movementMenu.SetActive(false);
+
+		HandleCharacterDeselectBFS();
+		UpdateTileShading();
+	}
+
+	private void WaitMovement()
+    {
+		CharacterTurnOver();
+
+		characterMovementState = CharacterMovementState.NoCharacterSelected;
+		movementData.Reset();
+		movementMenu.SetActive(false);
+
+		HandleCharacterDeselectBFS();
+		UpdateTileShading();
+	}
+
+	private void AttackMovement()
+    {
+		characterMovementState = CharacterMovementState.Attacking;
+		movementMenu.SetActive(false);
+
+		HandleCharacterDeselectBFS();
+		AttackTileShading();
+
+		UpdateTileShading();
+
+		//CharacterStats stats = _tileCur.Character.GetComponent<CharacterStats>();
+		//if (stats.Team != 0)
+		//{
+		//    print("Combat!");
+		//    combatCamera.GetComponent<CombatManager>().StartCombat(_seletedCharacter, _tileCur.Character);
+		//}
+    }
+
 
 	private void HandleTileClick(BattlefieldTile clickedTile) {
-		//print(_seletedCharacter);
-		//print(_tileCur.Character);
-
 
 		if (characterMovementState == CharacterMovementState.CharacterSelected) {
 
@@ -240,24 +333,26 @@ public class TesterGrid : MonoBehaviour
             {
 				movementData.potentialTile = clickedTile;
 				MoveCharacterTo(clickedTile.WorldLocation);
-            }
-			//else if(_tileCur.Character && _tileCur.ReachableInDistance <= allyStats.movement)
-			//         {
-			//	CharacterStats stats = _tileCur.Character.GetComponent<CharacterStats>();
-			//	if (stats.Team != 0)
-			//	{
-			//		print("Combat!");
-			//		combatCamera.GetComponent<CombatManager>().StartCombat(_seletedCharacter, _tileCur.Character);
 
-			//	}
-			//}
+				Vector3 menuPoint = MenuPositionAdjust();
 
-			characterMovementState = CharacterMovementState.NoCharacterSelected;
-			movementData.Reset();
+				MoveMenuTo(menuPoint);
+				movementMenu.SetActive(true);
+				characterMovementState = CharacterMovementState.MoveLocationSet;
+			}
+			else
+            {
+				characterMovementState = CharacterMovementState.NoCharacterSelected;
+				movementData.Reset();
 
-			HandleCharacterDeselectBFS();
+				HandleCharacterDeselectBFS();
+			}
+
+			
+
+			
 		}
-		else if (clickedTile.Character)
+		else if (characterMovementState == CharacterMovementState.NoCharacterSelected && clickedTile.Character)
 		{
 			CharacterStats stats = clickedTile.Character.GetComponent<CharacterStats>();
 
@@ -276,6 +371,7 @@ public class TesterGrid : MonoBehaviour
 			}
 
 		}
+		
 
 		UpdateTileShading();
 	}
@@ -291,17 +387,48 @@ public class TesterGrid : MonoBehaviour
 		location.z = -1;
 
 		movementData.selectedCharacter.transform.position = location;
-		movementData.selectedCharacter.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
-
-		movementData.selectedCharacterStats.CanMove = false;
-
+		
 		movementData.currentTile.Character = null;
 		movementData.potentialTile.Character = movementData.selectedCharacter;
+	}
+
+	private void MoveCharacterBackTo(Vector3 location)
+	{
+		location.x += 0.5f;
+		location.y += 0.5f;
+		location.z = -1;
+
+		movementData.selectedCharacter.transform.position = location;
+
+		movementData.potentialTile.Character = null;
+		movementData.currentTile.Character = movementData.selectedCharacter;
+	}
+
+	private void CharacterTurnOver()
+    {
+		movementData.selectedCharacter.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
+		movementData.selectedCharacterStats.CanMove = false;
 	}
 
 	private void HandleCharacterSelectBFS() {
 		TagReachableBySelectedChar();
     }
+
+	private void AttackTileShading()
+    {
+		foreach (var tile in GridData.instance.tiles.Values)
+		{
+			float manhatDist = Mathf.Abs(tile.LocalPlace.x - movementData.potentialTile.LocalPlace.x) +
+				 Mathf.Abs(tile.LocalPlace.y - movementData.potentialTile.LocalPlace.y);
+
+			// movementData.characterStats.attackRange in future
+			if (manhatDist <= 1)
+            {
+				tile.SelectedCharacterPathing = -1;
+            }
+
+		}
+	}
 
 	private void UpdateTileShading() {
 		foreach (var tile in GridData.instance.tiles.Values)
@@ -311,6 +438,10 @@ public class TesterGrid : MonoBehaviour
 
 			if (tile.SelectedCharacterPathing == 1) {
 				changeColor = new Color(0.4f, 0.5f, 1, 1);
+			}
+			else if (tile.SelectedCharacterPathing == -1)
+            {
+				changeColor = new Color(1, 0.4f, 0.4f, 1);
 			}
 
 			tile.TilemapMember.SetTileFlags(tile.LocalPlace, TileFlags.None);
