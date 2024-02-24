@@ -109,12 +109,12 @@ public class TesterGrid : MonoBehaviour, GameManager
 
 
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 1));
-		//enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
-		//enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 2));
+        enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
+        enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 2));
 
-		//allyCharacters.Add(PlaceCharacterAt(allyInfantry, -5, -4));
-		//allyCharacters.Add(PlaceCharacterAt(allyInfantry, -4, -4));
-		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -3, -4));
+        allyCharacters.Add(PlaceCharacterAt(allyInfantry, -5, -4));
+        allyCharacters.Add(PlaceCharacterAt(allyInfantry, -4, -4));
+        allyCharacters.Add(PlaceCharacterAt(allyInfantry, -3, -4));
 
 		movementMenu.SetActive(false);
 		Button[] buttons = movementMenu.GetComponentsInChildren<Button>();
