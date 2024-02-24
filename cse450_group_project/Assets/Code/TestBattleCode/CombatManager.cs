@@ -20,6 +20,7 @@ public class CombatManager : MonoBehaviour
         mouse.GetComponent<TesterGrid>().enabled = false;
         Vector3 originalAllyPos = ally.transform.position;
         Vector3 originalEnemyPos = enemy.transform.position;
+
         ally.transform.position = new Vector2(25, 0);
         enemy.transform.position = new Vector2(30, 0);
 
@@ -32,7 +33,7 @@ public class CombatManager : MonoBehaviour
     // this function is HUGE and I'll prob break it up
     public IEnumerator Attack(GameObject ally, GameObject enemy, Vector3 originalAllyPos, Vector3 originalEnemyPos)
     {
-        
+
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
         int enemyDodge = Random.Range(0, 10);
@@ -57,9 +58,8 @@ public class CombatManager : MonoBehaviour
         attackText.text = "Enemy " + (encrit ? "Critical " : "") + "Hit " + endamage;
 
         yield return new WaitForSecondsRealtime(3f);
-        allyStats.CanMove = false;
-        ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
         print("shift back");
+        ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
         combatCamera.enabled = false;
         mainCamera.enabled = true;
 
