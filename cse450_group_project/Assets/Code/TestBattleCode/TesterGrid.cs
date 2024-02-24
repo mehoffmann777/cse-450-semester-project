@@ -10,16 +10,26 @@ using TMPro;
 *	and I can annotate BattlefiledTiles to store data.
 */
 
-public class TesterGrid : MonoBehaviour
+public interface GameManager
+{
+	void MouseOverStats(CharacterStats stats);
+	void MouseLeaveStatCharacter();
+	void CharacterDead(GameObject character);
+	void CombatOver();
+}
+
+public class TesterGrid : MonoBehaviour, GameManager
 {
 
 	public TMP_Text turnUI;
+	public GameObject statMenu;
+	private TextMeshProUGUI statText;
+	public GameObject resultMenu;
 	public GameObject movementMenu;
 	private Button attackButton;
 
 	public GameObject enemyInfantry;
 	public GameObject allyInfantry;
-
 	//private BattlefieldTile _tilePrev;
 	//private BattlefieldTile _tileCur;
 
@@ -35,7 +45,9 @@ public class TesterGrid : MonoBehaviour
 
 	private enum BattleState {
 		PlayerTurn,
-		EnemyTurn
+		EnemyTurn,
+		Won,
+		Lost
 	}
 
 	private BattleState battleState;
@@ -70,23 +82,38 @@ public class TesterGrid : MonoBehaviour
 	public Camera mainCamera;
 	public Camera combatCamera;
 
+	private CombatManager combatManager;
 
 	private void Start()
     {
+		resultMenu.SetActive(false);
 		combatCamera.enabled = false;
-
+		combatManager = combatCamera.GetComponent<CombatManager>();
+		combatManager.myGameManager = this;
 		battleState = BattleState.PlayerTurn;
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
 		movementData = new CharacterMovementData();
 
+		statText = statMenu.GetComponent<TextMeshProUGUI>();
+		var rectTransform = statMenu.GetComponent<RectTransform>();
 
-		
+		var screenPoint = Camera.main.WorldToScreenPoint(new Vector3(-3, 3, 0));
+		var screenRect = Camera.main.pixelRect;
+
+
+		var rectTransPoint = new Vector3(
+			screenPoint.x - screenRect.width / 2.0f,
+			screenPoint.y - screenRect.height / 2.0f,
+			screenPoint.z);
+		rectTransform.SetLocalPositionAndRotation(rectTransPoint, Quaternion.identity);
+
+
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 1));
-		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
-		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 2));
+		//enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
+		//enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 2));
 
-		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -5, -4));
-		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -4, -4));
+		//allyCharacters.Add(PlaceCharacterAt(allyInfantry, -5, -4));
+		//allyCharacters.Add(PlaceCharacterAt(allyInfantry, -4, -4));
 		allyCharacters.Add(PlaceCharacterAt(allyInfantry, -3, -4));
 
 		movementMenu.SetActive(false);
@@ -117,6 +144,19 @@ public class TesterGrid : MonoBehaviour
 
 	private void Update()
 	{
+		if (battleState == BattleState.Won && !resultMenu.activeSelf)
+        {
+			resultMenu.GetComponentInChildren<TextMeshProUGUI>().text = "You Won!";
+			resultMenu.SetActive(true);
+        }
+
+		if (battleState == BattleState.Lost && !resultMenu.activeSelf)
+		{
+			resultMenu.GetComponentInChildren<TextMeshProUGUI>().text = "You Lost!";
+			resultMenu.SetActive(true);
+		}
+
+
 		if (battleState == BattleState.PlayerTurn)
         {
 			if (Input.GetMouseButtonDown(0))
@@ -139,6 +179,7 @@ public class TesterGrid : MonoBehaviour
 			ResetAllyCanMove();
 			battleState = BattleState.PlayerTurn;
 		}
+
 	}
 
 	private void TowardsPlayerEnemyMovement() {
@@ -290,6 +331,24 @@ public class TesterGrid : MonoBehaviour
 
 		}
 	}
+
+
+	public void MouseOverStats(CharacterStats stats)
+    {
+
+		statText.text = "HP: " + stats.health
+						+ "\nStr: " + stats.strength
+						+ "\nDef: " + stats.defense
+						+ "\nMov: " + stats.movement;
+
+		statMenu.SetActive(true);
+
+	}
+
+	public void MouseLeaveStatCharacter()
+    {
+		statMenu.SetActive(false);
+    }
 
 
 	private void MoveMenuTo(Vector3 point)
@@ -456,24 +515,19 @@ public class TesterGrid : MonoBehaviour
 
 				movementMenu.SetActive(false);
 
-				combatCamera.GetComponent<CombatManager>().StartCombat(movementData.selectedCharacter, clickedTile.Character);
-
-				// TODO starting combat allows a callback func for WaitMovement()
-				// the following is WaitMovement, but combat will change sprite color
-
-				movementData.selectedCharacterStats.CanMove = false;
-
-				characterMovementState = CharacterMovementState.NoCharacterSelected;
-				movementData.Reset();
-
-				HandleCharacterDeselectBFS();
-				UpdateTileShading();
+				combatManager.StartCombat(movementData.selectedCharacter, clickedTile.Character);
 
 				break;
 		}
 
 		UpdateTileShading();
 	}
+
+	public void CombatOver()
+    {
+		WaitMovement();
+	}
+
 
 	private bool CharacterCanMove(BattlefieldTile clickedTile) {
 		return clickedTile.SelectedCharacterPathing == 1;
@@ -508,6 +562,34 @@ public class TesterGrid : MonoBehaviour
     {
 		movementData.selectedCharacter.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
 		movementData.selectedCharacterStats.CanMove = false;
+	}
+
+	public void CharacterDead(GameObject deadCharacter)
+    {
+		foreach (BattlefieldTile tile in GridData.instance.tiles.Values)
+		{
+			GameObject character = tile.Character;
+
+			if (character != deadCharacter) { continue; }
+
+			tile.Character = null;
+
+			break;
+		}
+
+		allyCharacters.Remove(deadCharacter);
+		enemyCharacters.Remove(deadCharacter);
+
+		if (allyCharacters.Count == 0)
+        {
+			battleState = BattleState.Lost;
+        }
+		else if (enemyCharacters.Count == 0)
+		{
+			battleState = BattleState.Won;
+		}
+
+		deadCharacter.SetActive(false);
 	}
 
 	private void HandleCharacterSelectBFS() {
@@ -665,6 +747,8 @@ public class TesterGrid : MonoBehaviour
 		var tiles = GridData.instance.tiles; // This is our Dictionary of tiles
 
 		GameObject spawn = Instantiate(gameObject, spawnLocation, Quaternion.identity);
+
+		spawn.GetComponent<StatsMenuMouseOver>().myGameManager = this;
 
 		BattlefieldTile tile;
 
