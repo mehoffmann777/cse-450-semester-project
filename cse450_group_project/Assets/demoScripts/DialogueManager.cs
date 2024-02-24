@@ -82,6 +82,7 @@ public class DialogueManager : MonoBehaviour
         }
         //CHANGE LATER: use an input manager to standardize input throughout project
         //currently checks for return or left click
+        // HAD THIS TOO: || Input.GetMouseButtonDown(0)
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
         {
             ContinueStory();
@@ -119,7 +120,7 @@ public class DialogueManager : MonoBehaviour
             //extract the first word from the dialogue. This will always be the character name.
             for(int i = 0; i < nextDialogueToDisplay.Length; i++)
             {
-                if (nextDialogueToDisplay[i] == ' ' || nextDialogueToDisplay[i] == ':')
+                if (nextDialogueToDisplay[i] == ':')
                 {
                     if(i == 1)
                     {
@@ -186,6 +187,7 @@ public class DialogueManager : MonoBehaviour
     }
     public void MakeChoice(int choiceIndex)
     {
+        Debug.Log("choice made was: " + choiceIndex);
         currentStory.ChooseChoiceIndex(choiceIndex);
     }
 }
