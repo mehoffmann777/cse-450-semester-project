@@ -80,6 +80,7 @@ public class TesterGrid : MonoBehaviour
 		movementData = new CharacterMovementData();
 
 
+		
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 1));
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
 		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 2));
@@ -488,6 +489,7 @@ public class TesterGrid : MonoBehaviour
 		
 		movementData.currentTile.Character = null;
 		movementData.potentialTile.Character = movementData.selectedCharacter;
+
 	}
 
 	private void MoveCharacterBackTo(Vector3 location)
@@ -616,6 +618,8 @@ public class TesterGrid : MonoBehaviour
 					if (tileToCheck.SelectedCharacterPathing != 0) { continue; }
 
 					if (tileToCheck.Impassable) { continue; }
+
+					//if(tileToCheck.Character.activeSelf == false) { continue; }
 
 					//Cannot move through other team
 					if (tileToCheck.Character && tileToCheck.Character.GetComponent<CharacterStats>().Team != movementData.selectedCharacterStats.Team) { continue; }	
