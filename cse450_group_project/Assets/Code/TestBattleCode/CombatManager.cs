@@ -5,12 +5,15 @@ using TMPro;
 
 public class CombatManager : MonoBehaviour
 {
+    
     public GameObject mouse;
     public Camera mainCamera;
     public Camera combatCamera;
     public TextMeshProUGUI attackText;
     public TMP_Text turnUI;
     public bool combatDone = false;
+
+    public GameManager myGameManager;
 
     public void StartCombat(GameObject ally, GameObject enemy)
     {
@@ -20,6 +23,7 @@ public class CombatManager : MonoBehaviour
         mouse.GetComponent<TesterGrid>().enabled = false;
         Vector3 originalAllyPos = ally.transform.position;
         Vector3 originalEnemyPos = enemy.transform.position;
+
         ally.transform.position = new Vector2(25, 0);
         enemy.transform.position = new Vector2(30, 0);
 
@@ -32,7 +36,7 @@ public class CombatManager : MonoBehaviour
     // this function is HUGE and I'll prob break it up
     public IEnumerator Attack(GameObject ally, GameObject enemy, Vector3 originalAllyPos, Vector3 originalEnemyPos)
     {
-        
+
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
 
@@ -56,6 +60,7 @@ public class CombatManager : MonoBehaviour
         {
             int playerDodge = Random.Range(0, 10);
 
+
             if (enemyStats.accuracy > playerDodge)
             {
                 criticalHit = Random.Range(0, 100);
@@ -69,32 +74,32 @@ public class CombatManager : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(3f);
         }
-        allyStats.CanMove = false;
-        ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
-        checkHealth(ally);
-        checkHealth(enemy);
+        //allyStats.CanMove = false;
+        //ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
+
         combatCamera.enabled = false;
         mainCamera.enabled = true;
 
-        if(ally)
+        if (allyStats.health <= 0)
         {
-            ally.transform.position = originalAllyPos;
+            myGameManager.CharacterDead(ally);
         }
 
-        if (enemy)
+        if (enemyStats.health <= 0)
         {
-            enemy.transform.position = originalEnemyPos;
+            myGameManager.CharacterDead(enemy);
         }
+
+        
+
+
+        ally.transform.position = originalAllyPos;
+        enemy.transform.position = originalEnemyPos;
+        
         mouse.GetComponent<TesterGrid>().enabled = true;
         turnUI.enabled = true;
 
+        myGameManager.CombatOver();
     }
 
-    public void checkHealth(GameObject unit)
-    {
-        if(unit.GetComponent<CharacterStats>().health <= 0)
-        {
-            unit.SetActive(false);
-        }
-    }
 }
