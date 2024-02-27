@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+public delegate (BattlefieldTile, BattlefieldTile) GetMovementDecision(BattlefieldTile currentTile);
+
 public class CharacterStats : MonoBehaviour
 {
 
@@ -17,5 +19,6 @@ public class CharacterStats : MonoBehaviour
 
     public bool CanMove = true;
     public int Team;
-   
+
+    public GetMovementDecision getMovementDecision;
 }
