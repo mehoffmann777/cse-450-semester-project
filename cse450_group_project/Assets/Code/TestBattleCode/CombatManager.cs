@@ -11,9 +11,9 @@ public class CombatManager : MonoBehaviour
     public Camera combatCamera;
     public TextMeshProUGUI attackText;
     public TMP_Text turnUI;
-    public bool combatDone = false;
 
-    public GameManager myGameManager;
+    public CharacterDead characterDead;
+    public CombatOver combatOver;
 
     public void StartCombat(GameObject ally, GameObject enemy)
     {
@@ -82,12 +82,12 @@ public class CombatManager : MonoBehaviour
 
         if (allyStats.health <= 0)
         {
-            myGameManager.CharacterDead(ally);
+            characterDead(ally);
         }
 
         if (enemyStats.health <= 0)
         {
-            myGameManager.CharacterDead(enemy);
+            characterDead(enemy);
         }
 
         
@@ -99,7 +99,7 @@ public class CombatManager : MonoBehaviour
         mouse.GetComponent<TesterGrid>().enabled = true;
         turnUI.enabled = true;
 
-        myGameManager.CombatOver();
+        combatOver();
     }
 
 }

@@ -5,8 +5,9 @@ using TMPro;
 
 public class StatsMenuMouseOver : MonoBehaviour
 {
+    public MouseOverStats mouseOverStats;
+    public MouseLeaveStatCharacter mouseLeave;
 
-    public GameManager myGameManager;
     private CharacterStats stats;
 
     public void Start()
@@ -16,11 +17,11 @@ public class StatsMenuMouseOver : MonoBehaviour
 
     public void OnMouseOver()
     {
-        myGameManager.MouseOverStats(stats);
+        mouseOverStats(stats);
     }
 
     public void OnMouseExit()
     {
-        myGameManager.MouseLeaveStatCharacter();
+        mouseLeave();
     }
 }

@@ -73,7 +73,6 @@ public class GridData : MonoBehaviour
                 MovementCost = isRoughTerain ? 2 : 1,
                 Impassable = isWater,
                 Character = null,
-                SelectedCharacterPathing = 0,
                 ReachableInDistance = int.MaxValue
             };
 

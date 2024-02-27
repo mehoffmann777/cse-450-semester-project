@@ -10,15 +10,12 @@ using TMPro;
 *	and I can annotate BattlefiledTiles to store data.
 */
 
-public interface GameManager
-{
-	void MouseOverStats(CharacterStats stats);
-	void MouseLeaveStatCharacter();
-	void CharacterDead(GameObject character);
-	void CombatOver();
-}
+public delegate void MouseOverStats(CharacterStats stats);
+public delegate void MouseLeaveStatCharacter();
+public delegate void CharacterDead(GameObject character);
+public delegate void CombatOver();
 
-public class TesterGrid : MonoBehaviour, GameManager
+public class TesterGrid : MonoBehaviour
 {
 
 	public TMP_Text turnUI;
@@ -36,7 +33,7 @@ public class TesterGrid : MonoBehaviour, GameManager
 	// private GameObject _seletedCharacter;
 	// private GameObject _enemyCharacter;
 
-	private List<Vector3> validMovementLocations = new();
+	private Dictionary<BattlefieldTile, BattlefieldMovementTileTag> movementLocations = new();
 
 	private List<GameObject> enemyCharacters = new();
 	private List<GameObject> allyCharacters = new();
@@ -89,7 +86,11 @@ public class TesterGrid : MonoBehaviour, GameManager
 		resultMenu.SetActive(false);
 		combatCamera.enabled = false;
 		combatManager = combatCamera.GetComponent<CombatManager>();
-		combatManager.myGameManager = this;
+		combatManager.combatOver = CombatOver;
+		combatManager.characterDead = CharacterDead;
+
+
+
 		battleState = BattleState.PlayerTurn;
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
 		movementData = new CharacterMovementData();
@@ -201,26 +202,28 @@ public class TesterGrid : MonoBehaviour, GameManager
 			movementData.selectedCharacter = character;
 			movementData.selectedCharacterStats = characterStats;
 
-			TagReachableBySelectedChar();
-
+			movementLocations = MovementUtils.MovementReachableTiles(tile, characterStats);
+			var movLocList = MovementUtils.MovementDictionaryToValidList(movementLocations);
 
 			Vector3 positionOfRandomAlly = GetRandomAllyPosition();
 
 			float distanceToAlly = int.MaxValue;
-			Vector3 movementChoice = validMovementLocations[0];
-			foreach (Vector3 location in validMovementLocations)
+			BattlefieldTile movementChoice = movLocList[0];
+
+			foreach (BattlefieldTile movTile in movLocList)
             {
-				float dist = ManhattanDistance(location, positionOfRandomAlly);
+				float dist = ManhattanDistance(movTile.LocalPlace, positionOfRandomAlly);
 
 				if (dist < distanceToAlly)
                 {
 					distanceToAlly = dist;
-					movementChoice = location;
+					movementChoice = movTile;
                 }
 			}
 
-			GridData.instance.tiles.TryGetValue(movementChoice, out movementData.potentialTile);
-			MoveCharacterTo(movementChoice);
+			movementData.potentialTile = movementChoice;
+
+			MoveCharacterTo(movementChoice.LocalPlace);
 			CharacterTurnOver();
 
 			movementData.Reset();
@@ -255,42 +258,42 @@ public class TesterGrid : MonoBehaviour, GameManager
 	}
 
 
-	private void RandomEnemyMovement()
-	{
+	//private void RandomEnemyMovement()
+	//{
 
-		foreach (BattlefieldTile tile in GridData.instance.tiles.Values)
-		{
-			GameObject character = tile.Character;
+	//	foreach (BattlefieldTile tile in GridData.instance.tiles.Values)
+	//	{
+	//		GameObject character = tile.Character;
 
-			if (character == null) { continue; }
+	//		if (character == null) { continue; }
 
-			CharacterStats characterStats = character.GetComponent<CharacterStats>();
+	//		CharacterStats characterStats = character.GetComponent<CharacterStats>();
 
-			if (characterStats == null) { continue; }
+	//		if (characterStats == null) { continue; }
 
-			if (characterStats.Team == 0) { continue; }
+	//		if (characterStats.Team == 0) { continue; }
 
-			if (!characterStats.CanMove) { continue; }
+	//		if (!characterStats.CanMove) { continue; }
 
-			movementData.currentTile = tile;
-			movementData.selectedCharacter = character;
-			movementData.selectedCharacterStats = characterStats;
+	//		movementData.currentTile = tile;
+	//		movementData.selectedCharacter = character;
+	//		movementData.selectedCharacterStats = characterStats;
 
-			TagReachableBySelectedChar();
+	//		TagReachableBySelectedChar();
 
-			int movementChoiceIndex = Random.Range(0, validMovementLocations.Count);
-			Vector3 movementChoice = validMovementLocations[movementChoiceIndex];
+	//		int movementChoiceIndex = Random.Range(0, validMovementLocations.Count);
+	//		Vector3 movementChoice = validMovementLocations[movementChoiceIndex];
 
-			GridData.instance.tiles.TryGetValue(movementChoice, out movementData.potentialTile);
-			MoveCharacterTo(movementChoice);
-			CharacterTurnOver();
+	//		GridData.instance.tiles.TryGetValue(movementChoice, out movementData.potentialTile);
+	//		MoveCharacterTo(movementChoice);
+	//		CharacterTurnOver();
 
-			movementData.Reset();
-			HandleCharacterDeselectBFS();
-		}
+	//		movementData.Reset();
+	//		HandleCharacterDeselectBFS();
+	//	}
 
-		ResetEnemyCanMove();
-	}
+	//	ResetEnemyCanMove();
+	//}
 
 
 	private bool AllyTurnOver() {
@@ -412,7 +415,6 @@ public class TesterGrid : MonoBehaviour, GameManager
 		if (tiles.TryGetValue(worldPoint, out clickedTile))
 		{
 			HandleTileClick(clickedTile);
-			UpdateTileShading();
 		}
 
 	}
@@ -425,7 +427,6 @@ public class TesterGrid : MonoBehaviour, GameManager
 		movementMenu.SetActive(false);
 
 		HandleCharacterDeselectBFS();
-		UpdateTileShading();
 	}
 
 	private void WaitMovement()
@@ -437,7 +438,6 @@ public class TesterGrid : MonoBehaviour, GameManager
 		movementMenu.SetActive(false);
 
 		HandleCharacterDeselectBFS();
-		UpdateTileShading();
 	}
 
 	private void AttackMovement(Button sender)
@@ -447,8 +447,7 @@ public class TesterGrid : MonoBehaviour, GameManager
 
 		HandleCharacterDeselectBFS();
 		AttackTileShading();
-
-		UpdateTileShading();
+		ShadeTiles();
     }
 
 
@@ -505,7 +504,7 @@ public class TesterGrid : MonoBehaviour, GameManager
 				break;
 			case CharacterMovementState.Attacking:
 
-				if (clickedTile.SelectedCharacterPathing != -1) { break; }
+				if (!movementLocations.ContainsKey(clickedTile) || movementLocations[clickedTile] != BattlefieldMovementTileTag.Attackable) { break; }
 
 				if (!clickedTile.Character) { break; }
 
@@ -519,8 +518,6 @@ public class TesterGrid : MonoBehaviour, GameManager
 
 				break;
 		}
-
-		UpdateTileShading();
 	}
 
 	public void CombatOver()
@@ -530,7 +527,7 @@ public class TesterGrid : MonoBehaviour, GameManager
 
 
 	private bool CharacterCanMove(BattlefieldTile clickedTile) {
-		return clickedTile.SelectedCharacterPathing == 1;
+		return movementLocations.ContainsKey(clickedTile) && movementLocations[clickedTile] == BattlefieldMovementTileTag.Reachable;
 	}
 
 
@@ -543,7 +540,6 @@ public class TesterGrid : MonoBehaviour, GameManager
 		
 		movementData.currentTile.Character = null;
 		movementData.potentialTile.Character = movementData.selectedCharacter;
-
 	}
 
 	private void MoveCharacterBackTo(Vector3 location)
@@ -593,8 +589,9 @@ public class TesterGrid : MonoBehaviour, GameManager
 	}
 
 	private void HandleCharacterSelectBFS() {
-		TagReachableBySelectedChar();
-    }
+		movementLocations = MovementUtils.MovementReachableTiles(movementData.currentTile, movementData.selectedCharacterStats);
+		ShadeTiles();
+	}
 
 	private float ManhattanDistance(Vector3 v1, Vector3 v2)
     {
@@ -603,139 +600,65 @@ public class TesterGrid : MonoBehaviour, GameManager
 
 	private void AttackTileShading()
     {
-		foreach (var tile in GridData.instance.tiles.Values)
-		{
-
-			float manhatDist = ManhattanDistance(tile.LocalPlace, movementData.potentialTile.LocalPlace);
-
-			// movementData.characterStats.attackRange in future
-			if (manhatDist <= 1)
-            {
-				tile.SelectedCharacterPathing = -1;
-            }
-
-		}
+		movementLocations = MovementUtils.AttackReachableTiles(movementData.potentialTile, movementData.selectedCharacterStats);
 	}
 
-	private void UpdateTileShading() {
-		foreach (var tile in GridData.instance.tiles.Values)
-		{
+    //private void UpdateTileShading() {
+    //	foreach (var tileKeyPair in movementLocations)
+    //	{
 
-			Color changeColor = new Color(1, 1, 1, 1);
+    //		Color changeColor = new Color(1, 1, 1, 1);
 
-			if (tile.SelectedCharacterPathing == 1) {
-				changeColor = new Color(0.4f, 0.5f, 1, 1);
-			}
-			else if (tile.SelectedCharacterPathing == -1)
-            {
-				changeColor = new Color(1, 0.4f, 0.4f, 1);
-			}
+    //		if (tile.SelectedCharacterPathing == 1) {
+    //			changeColor = new Color(0.4f, 0.5f, 1, 1);
+    //		}
+    //		else if (tile.SelectedCharacterPathing == -1)
+    //           {
+    //			changeColor = new Color(1, 0.4f, 0.4f, 1);
+    //		}
+
+    //		tile.TilemapMember.SetTileFlags(tile.LocalPlace, TileFlags.None);
+    //		tile.TilemapMember.SetColor(tile.LocalPlace, changeColor);
+
+    //	}
+    //}
+
+    private void UnshadeTiles()
+    {
+        foreach (var tileKeyPair in movementLocations)
+        {
+			BattlefieldTile tile = tileKeyPair.Key;
 
 			tile.TilemapMember.SetTileFlags(tile.LocalPlace, TileFlags.None);
-			tile.TilemapMember.SetColor(tile.LocalPlace, changeColor);
+            tile.TilemapMember.SetColor(tile.LocalPlace, Color.white);
+        }
+    }
 
-		}
-	}
+	private void ShadeTiles()
+    {
+		foreach (var tileKeyPair in movementLocations)
+        {
+            Color changeColor = new Color(1, 1, 1, 1);
 
-	private void AddTileDecreasing(LinkedList<BattlefieldTile> list, BattlefieldTile tile) {
-		LinkedListNode<BattlefieldTile> n = list.First;
+            if (tileKeyPair.Value == BattlefieldMovementTileTag.Reachable)
+            {
+                changeColor = new Color(0.4f, 0.5f, 1, 1);
+            }
+			else if (tileKeyPair.Value == BattlefieldMovementTileTag.Attackable)
+			{
+				changeColor = new Color(1, 0.4f, 0.4f, 1);
+            }
 
-		if (n == null) { list.AddFirst(tile); return; }
+            tileKeyPair.Key.TilemapMember.SetTileFlags(tileKeyPair.Key.LocalPlace, TileFlags.None);
+			tileKeyPair.Key.TilemapMember.SetColor(tileKeyPair.Key.LocalPlace, changeColor);
 
-
-		while (tile.ReachableInDistance < n.Value.ReachableInDistance) {
-			if (n.Next == null) {
-				list.AddAfter(n, tile);
-				return;
-			}
-
-			n = n.Next;
-		}
-
-		list.AddBefore(n, tile);
-	}
-
-
-	private void TagReachableBySelectedChar() {
-		LinkedList<BattlefieldTile> queue = new();
-
-		var tiles = GridData.instance.tiles;
-
-		Vector3Int loc;
-
-		int mov = movementData.selectedCharacterStats.movement;
-
-		movementData.currentTile.ReachableInDistance = 0;
-		movementData.currentTile.SelectedCharacterPathing = 1;
-		validMovementLocations.Add(movementData.currentTile.LocalPlace);
-
-		queue.AddFirst(movementData.currentTile);
-
-		while (queue.Count > 0) {
-			LinkedListNode<BattlefieldTile> thisTile = queue.Last;
-			queue.RemoveLast();
-
-			loc = thisTile.Value.LocalPlace;
-
-			Vector3Int upLoc = loc;
-			upLoc.y++;
-
-			Vector3Int downLoc = loc;
-			downLoc.y--;
-
-			Vector3Int rightLoc = loc;
-			rightLoc.x++;
-
-			Vector3Int leftLoc = loc;
-			leftLoc.x--;
-
-			Vector3Int[] locToCheck = { upLoc, downLoc, rightLoc, leftLoc };
-
-			BattlefieldTile tileToCheck;
-
-			foreach (Vector3Int possibleLoc in locToCheck) {
-
-				if (tiles.TryGetValue(possibleLoc, out tileToCheck))
-				{
-					if (tileToCheck.SelectedCharacterPathing != 0) { continue; }
-
-					if (tileToCheck.Impassable) { continue; }
-
-					//if(tileToCheck.Character.activeSelf == false) { continue; }
-
-					//Cannot move through other team
-					if (tileToCheck.Character && tileToCheck.Character.GetComponent<CharacterStats>().Team != movementData.selectedCharacterStats.Team) { continue; }	
-
-					tileToCheck.ReachableInDistance = thisTile.Value.ReachableInDistance + tileToCheck.MovementCost;
-					
-					if (tileToCheck.ReachableInDistance > mov) { continue; }
-
-
-					if (tileToCheck.Character != null) {
-						tileToCheck.SelectedCharacterPathing = 2;
-					}
-					else {
-						tileToCheck.SelectedCharacterPathing = 1;
-						validMovementLocations.Add(tileToCheck.LocalPlace);
-					}
-
-					AddTileDecreasing(queue, tileToCheck);
-				}
-			}
-		}
-	}
-
+        }
+    }
 
 	private void HandleCharacterDeselectBFS()
 	{
-		// Reset BFS
-		foreach (var tile in GridData.instance.tiles.Values)
-		{
-			tile.ReachableInDistance = int.MaxValue;
-			tile.SelectedCharacterPathing = 0;
-		}
-
-		validMovementLocations.Clear();
+		UnshadeTiles();
+		movementLocations.Clear();
 	}
 
 	private GameObject PlaceCharacterAt(GameObject gameObject, int x, int y)
@@ -748,7 +671,10 @@ public class TesterGrid : MonoBehaviour, GameManager
 
 		GameObject spawn = Instantiate(gameObject, spawnLocation, Quaternion.identity);
 
-		spawn.GetComponent<StatsMenuMouseOver>().myGameManager = this;
+		StatsMenuMouseOver statMenu = spawn.GetComponent<StatsMenuMouseOver>();
+
+		statMenu.mouseOverStats = MouseOverStats;
+		statMenu.mouseLeave = MouseLeaveStatCharacter;
 
 		BattlefieldTile tile;
 
