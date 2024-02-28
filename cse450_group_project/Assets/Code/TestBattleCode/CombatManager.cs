@@ -15,8 +15,15 @@ public class CombatManager : MonoBehaviour
     public CharacterDead characterDead;
     public CombatOver combatOver;
     public SpriteRenderer enemySprite;
+    public SpriteRenderer allySprite;
+    public Sprite allyGridSprite;
+    public Sprite enemyGridSprite;
+    public Sprite enemyCombatSprite;
+    public Sprite allyCombatSprite;
 
-    
+    public int enemyDamage;
+    public int enemyHit;
+
     public void StartCombat(GameObject ally, GameObject enemy)
     {
         mainCamera.enabled = false;
@@ -24,7 +31,12 @@ public class CombatManager : MonoBehaviour
         turnUI.enabled = false;
         mouse.GetComponent<TesterGrid>().enabled = false;
         enemySprite = enemy.GetComponent<SpriteRenderer>();
+        allySprite = ally.GetComponent<SpriteRenderer>();
+
+        allySprite.sprite = allyCombatSprite;
+        enemySprite.sprite = enemyCombatSprite;
         enemySprite.flipX = true;
+    
         Vector3 originalAllyPos = ally.transform.position;
         Vector3 originalEnemyPos = enemy.transform.position;
 
@@ -46,6 +58,7 @@ public class CombatManager : MonoBehaviour
 
         int enemyDodge = Random.Range(0, 10);
         int criticalHit = Random.Range(0, 100);
+        attackText.color = Color.white;
         if (allyStats.accuracy > enemyDodge)
         {
             bool crit = allyStats.luck > criticalHit;
@@ -64,7 +77,7 @@ public class CombatManager : MonoBehaviour
         {
             int playerDodge = Random.Range(0, 10);
 
-
+            attackText.color = Color.red;
             if (enemyStats.accuracy > playerDodge)
             {
                 criticalHit = Random.Range(0, 100);
@@ -95,7 +108,8 @@ public class CombatManager : MonoBehaviour
         }
 
 
-
+        allySprite.sprite = allyGridSprite;
+        enemySprite.sprite = enemyGridSprite;
         enemySprite.flipX = false;
         ally.transform.position = originalAllyPos;
         enemy.transform.position = originalEnemyPos;
