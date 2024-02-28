@@ -17,6 +17,7 @@ public class DialogueManager : MonoBehaviour
     [Header("Dilaogue UI")]
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private Image pictureBox;
 
     [Header("Finnicky Timing Things")]
@@ -108,6 +109,7 @@ public class DialogueManager : MonoBehaviour
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
+        nameText.text = "";
         SceneManager.LoadScene("TestBattle");
     }
     private void ContinueStory()
@@ -117,11 +119,14 @@ public class DialogueManager : MonoBehaviour
         {
             string nextDialogueToDisplay = currentStory.Continue();
             string name = "";
+            int firstColonPosition = -1;
             //extract the first word from the dialogue. This will always be the character name.
             for(int i = 0; i < nextDialogueToDisplay.Length; i++)
             {
                 if (nextDialogueToDisplay[i] == ':')
                 {
+                    //adding two so that the colon and spaces aren't included on the second line as dialogue runs
+                    firstColonPosition = i+2;
                     if(i == 1)
                     {
                         Debug.LogError("Line of Dialogue with space in front given");
@@ -133,7 +138,13 @@ public class DialogueManager : MonoBehaviour
                     name += nextDialogueToDisplay[i];
                 }
             }
-            dialogueText.text = nextDialogueToDisplay;
+            if(firstColonPosition == -1)
+            {
+                Debug.LogError("No colon in text");
+            }
+            nameText.text = name + ":";
+            //set the speaking text
+            dialogueText.text = nextDialogueToDisplay.Substring(firstColonPosition);
             Sprite result;
             if(characterArtMap.TryGetValue(name, out result))
             {
@@ -168,7 +179,8 @@ public class DialogueManager : MonoBehaviour
         foreach(Choice choice in currentChoices)
         {
             choices[index].gameObject.SetActive(true);
-            choicesText[index].text = choice.text;
+            //added this space in front of the choice text so that it looks nicer
+            choicesText[index].text = " " + choice.text;
             index++;
         }
         //ensure that any choices that the UI supports, but the story doesn't, stay hidden.
