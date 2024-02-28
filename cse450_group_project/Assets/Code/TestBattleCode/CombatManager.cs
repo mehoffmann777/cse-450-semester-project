@@ -14,13 +14,17 @@ public class CombatManager : MonoBehaviour
 
     public CharacterDead characterDead;
     public CombatOver combatOver;
+    public SpriteRenderer enemySprite;
 
+    
     public void StartCombat(GameObject ally, GameObject enemy)
     {
         mainCamera.enabled = false;
         combatCamera.enabled = true;
         turnUI.enabled = false;
         mouse.GetComponent<TesterGrid>().enabled = false;
+        enemySprite = enemy.GetComponent<SpriteRenderer>();
+        enemySprite.flipX = true;
         Vector3 originalAllyPos = ally.transform.position;
         Vector3 originalEnemyPos = enemy.transform.position;
 
@@ -90,9 +94,9 @@ public class CombatManager : MonoBehaviour
             characterDead(enemy);
         }
 
-        
 
 
+        enemySprite.flipX = false;
         ally.transform.position = originalAllyPos;
         enemy.transform.position = originalEnemyPos;
         
