@@ -22,7 +22,31 @@ public class CombatManager : MonoBehaviour
     public Sprite allyCombatSprite;
 
     public int enemyDamage;
-    public int enemyHit;
+    public int enemyHitChance;
+    public int allyDamage;
+    public int allyHitChance;
+
+    // so enemy AI can make smart decisions about who to attack
+    public int[] PredictCombat(GameObject ally, GameObject enemy)
+    {
+        CharacterStats allyStats = ally.GetComponent<CharacterStats>();
+        CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
+
+        // does not account for crits bc that's rolled on attack
+        allyDamage = allyStats.strength - enemyStats.defense;
+        enemyDamage = enemyStats.strength - allyStats.defense;
+
+        // will rework stats to factor in both accuracy + opponent's something to determine dodge
+        // dodge is just rolled as a set 0-10 on attack rn, but this could be changed 
+        enemyHitChance = enemyStats.accuracy;
+        allyHitChance = allyStats.accuracy;
+
+        int allyHealthAfterCombat = allyStats.health - enemyDamage;
+        int enemyHealthAfterCombat = enemyStats.health - allyDamage;
+       
+        return new int[] { allyHealthAfterCombat, enemyHealthAfterCombat };
+
+    }
 
     public void StartCombat(GameObject ally, GameObject enemy)
     {
