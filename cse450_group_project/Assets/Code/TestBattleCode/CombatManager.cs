@@ -27,7 +27,7 @@ public class CombatManager : MonoBehaviour
     public int allyHitChance;
 
     // so enemy AI can make smart decisions about who to attack
-    public int[] PredictCombat(GameObject ally, GameObject enemy)
+    public Dictionary<string, int> PredictCombat(GameObject ally, GameObject enemy)
     {
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
@@ -43,8 +43,21 @@ public class CombatManager : MonoBehaviour
 
         int allyHealthAfterCombat = allyStats.health - enemyDamage;
         int enemyHealthAfterCombat = enemyStats.health - allyDamage;
-       
-        return new int[] { allyHealthAfterCombat, enemyHealthAfterCombat };
+
+        int wouldKillAlly = allyHealthAfterCombat <= 0 ? 1 : 0;
+        int wouldKillEnemy = enemyHealthAfterCombat <= 0 ? 1 : 0;
+
+        Dictionary<string, int> combatPredictions = new Dictionary<string, int>{
+            { "AllyHitChance", allyHitChance },
+            { "EnemyHitChance", enemyHitChance },
+            { "AllyHealth", allyHealthAfterCombat  },
+            { "EnemyHealth", enemyHealthAfterCombat },
+            { "WouldKillAlly", wouldKillAlly },
+            { "WouldKillEnemy", wouldKillEnemy }
+
+        };
+
+        return combatPredictions;
 
     }
 
