@@ -270,7 +270,10 @@ public class TesterGrid : MonoBehaviour
 						+ "\nDef: " + stats.defense
 						+ "\nMov: " + stats.movement;
 
-		statMenu.SetActive(true);
+		if (!stats.inCombat)
+		{
+			statMenu.SetActive(true);
+		}
 
 	}
 

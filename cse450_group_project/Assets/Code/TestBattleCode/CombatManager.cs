@@ -67,6 +67,13 @@ public class CombatManager : MonoBehaviour
         combatCamera.enabled = true;
         turnUI.enabled = false;
         mouse.GetComponent<TesterGrid>().enabled = false;
+
+        CharacterStats allyStats = ally.GetComponent<CharacterStats>();
+        CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
+
+        allyStats.inCombat = true;
+        enemyStats.inCombat = true;
+
         enemySprite = enemy.GetComponent<SpriteRenderer>();
         allySprite = ally.GetComponent<SpriteRenderer>();
 
@@ -152,6 +159,9 @@ public class CombatManager : MonoBehaviour
         enemy.transform.position = originalEnemyPos;
         
         mouse.GetComponent<TesterGrid>().enabled = true;
+        allyStats.inCombat = false;
+        enemyStats.inCombat = false;
+
         turnUI.enabled = true;
 
         combatOver();

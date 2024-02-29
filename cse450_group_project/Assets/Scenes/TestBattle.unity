@@ -6159,7 +6159,9 @@ MonoBehaviour:
   enemyCombatSprite: {fileID: -38225528, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
   allyCombatSprite: {fileID: 1671081441, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
   enemyDamage: 0
-  enemyHit: 0
+  enemyHitChance: 0
+  allyDamage: 0
+  allyHitChance: 0
 --- !u!1 &2101957253
 GameObject:
   m_ObjectHideFlags: 0

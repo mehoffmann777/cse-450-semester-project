@@ -21,4 +21,6 @@ public class CharacterStats : MonoBehaviour
     public int Team;
 
     public GetMovementDecision getMovementDecision;
+
+    public bool inCombat = false;
 }
