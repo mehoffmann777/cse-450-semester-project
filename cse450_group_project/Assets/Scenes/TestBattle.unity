@@ -5897,17 +5897,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1890700203}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9de6f5d68f083432a80e6827cb589bd3, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c2c10aa35a454dee8336dc6532f44a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   turnUI: {fileID: 1047575418}
   statMenu: {fileID: 1895145883}
   resultMenu: {fileID: 564535368}
   movementMenu: {fileID: 1672276076}
-  enemyInfantry: {fileID: 1744878082758574427, guid: 17329ff58138542c1ad24f3bb0f5bce1, type: 3}
-  allyInfantry: {fileID: 1744878082758574427, guid: 9896407788dc64b418b1a22ee8de7074, type: 3}
   mainCamera: {fileID: 1238021198}
   combatCamera: {fileID: 2064118641}
+  enemyInfantry: {fileID: 1744878082758574427, guid: 17329ff58138542c1ad24f3bb0f5bce1, type: 3}
+  allyInfantry: {fileID: 1744878082758574427, guid: 9896407788dc64b418b1a22ee8de7074, type: 3}
 --- !u!1 &1895145883
 GameObject:
   m_ObjectHideFlags: 0

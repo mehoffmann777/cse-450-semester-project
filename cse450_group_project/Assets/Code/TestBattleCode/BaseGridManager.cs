@@ -15,7 +15,7 @@ public delegate void MouseLeaveStatCharacter();
 public delegate void CharacterDead(GameObject character);
 public delegate void CombatOver();
 
-public class TesterGrid : MonoBehaviour
+public abstract class BaseGridManager : MonoBehaviour
 {
 
 	public TMP_Text turnUI;
@@ -25,10 +25,7 @@ public class TesterGrid : MonoBehaviour
 	public GameObject movementMenu;
 	private Button attackButton;
 
-	public GameObject enemyInfantry;
-	public GameObject allyInfantry;
-
-
+	
 	private Dictionary<BattlefieldTile, BattlefieldMovementTileTag> movementLocations = new();
 
 	private List<GameObject> enemyCharacters = new();
@@ -102,14 +99,8 @@ public class TesterGrid : MonoBehaviour
 			screenPoint.z);
 		rectTransform.SetLocalPositionAndRotation(rectTransPoint, Quaternion.identity);
 
+		PlaceCharacters();
 
-		enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 1));
-        enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 2, 2));
-        enemyCharacters.Add(PlaceCharacterAt(enemyInfantry, 1, 2));
-
-        allyCharacters.Add(PlaceCharacterAt(allyInfantry, -5, -4));
-        allyCharacters.Add(PlaceCharacterAt(allyInfantry, -4, -4));
-        allyCharacters.Add(PlaceCharacterAt(allyInfantry, -3, -4));
 
 		movementMenu.SetActive(false);
 		Button[] buttons = movementMenu.GetComponentsInChildren<Button>();
@@ -135,6 +126,40 @@ public class TesterGrid : MonoBehaviour
 		turnCount = 1;
 		turnUI.text = "Turn " + turnCount.ToString();
 
+	}
+
+	public struct CharacterSetupInfo
+    {
+		public GameObject character;
+		public int x;
+		public int y;
+		public GetMovementDecision decisionPattern;
+
+		public CharacterSetupInfo(GameObject character, int x, int y, GetMovementDecision decisionPattern)
+		{
+			this.character = character;
+			this.x = x;
+			this.y = y;
+			this.decisionPattern = decisionPattern;
+		}
+
+	}
+
+	public abstract List<CharacterSetupInfo> GetEnemySetupPattern();
+	public abstract List<CharacterSetupInfo> GetAllySetupPattern();
+
+
+	private void PlaceCharacters()
+    {
+		foreach (CharacterSetupInfo info in GetEnemySetupPattern())
+        {
+			enemyCharacters.Add(PlaceCharacterAt(info.character, info.x, info.y, info.decisionPattern));
+        }
+
+		foreach (CharacterSetupInfo info in GetAllySetupPattern())
+		{
+			allyCharacters.Add(PlaceCharacterAt(info.character, info.x, info.y, info.decisionPattern));
+		}
 	}
 
 	private void Update()
@@ -607,7 +632,7 @@ public class TesterGrid : MonoBehaviour
 		movementLocations.Clear();
 	}
 
-	private GameObject PlaceCharacterAt(GameObject gameObject, int x, int y)
+	private GameObject PlaceCharacterAt(GameObject gameObject, int x, int y, GetMovementDecision movementDecision)
 	{
 
 		Vector3 spawnLocation = new Vector3(x + 0.5f, y + 0.5f, -1);
@@ -617,7 +642,7 @@ public class TesterGrid : MonoBehaviour
 
 		GameObject spawn = Instantiate(gameObject, spawnLocation, Quaternion.identity);
 		CharacterStats spawnStats = spawn.GetComponent<CharacterStats>();
-		spawnStats.getMovementDecision = EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack;
+		spawnStats.getMovementDecision = movementDecision;
 
 		StatsMenuMouseOver statMenu = spawn.GetComponent<StatsMenuMouseOver>();
 
