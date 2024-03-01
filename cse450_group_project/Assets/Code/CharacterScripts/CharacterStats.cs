@@ -6,6 +6,14 @@ using TMPro;
 
 public delegate (BattlefieldTile, BattlefieldTile) GetMovementDecision(BattlefieldTile currentTile);
 
+public enum CharacterTeam
+{
+    Ally,
+    Enemy,
+    Other
+}
+
+
 public class CharacterStats : MonoBehaviour
 {
 
@@ -18,7 +26,7 @@ public class CharacterStats : MonoBehaviour
     public int movement;
 
     public bool CanMove = true;
-    public int Team;
+    public CharacterTeam Team;
 
     public GetMovementDecision getMovementDecision;
 

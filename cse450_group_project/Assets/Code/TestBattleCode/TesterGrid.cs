@@ -167,18 +167,30 @@ public class TesterGrid : MonoBehaviour
 
 		if (battleState == BattleState.EnemyTurn) {
 
-			TakeEnemyTurn();
+			if (characterMovementState == CharacterMovementState.NoCharacterSelected)
+            {
+				characterMovementState = CharacterMovementState.CharacterSelected;
+				StartCoroutine(TakeEnemyTurn());
+            }
 
-			turnUI.text = "Turn " + (++turnCount).ToString();
 
-			ResetAllyCanMove();
-			battleState = BattleState.PlayerTurn;
+			if (EnemyTurnOver())
+            {
+				turnUI.text = "Turn " + (++turnCount).ToString();
+				ResetEnemyCanMove();
+				ResetAllyCanMove();
+				battleState = BattleState.PlayerTurn;
+            }
+
 		}
 
 	}
 
-	private void TakeEnemyTurn()
+
+	// Moves one enemy 
+	private IEnumerator TakeEnemyTurn()
     {
+
 		foreach (BattlefieldTile tile in GridData.instance.tiles.Values)
 		{
 			GameObject character = tile.Character;
@@ -189,7 +201,7 @@ public class TesterGrid : MonoBehaviour
 
 			if (characterStats == null) { continue; }
 
-			if (characterStats.Team == 0) { continue; }
+			if (characterStats.Team != CharacterTeam.Enemy) { continue; }
 
 			if (!characterStats.CanMove) { continue; }
 
@@ -204,22 +216,30 @@ public class TesterGrid : MonoBehaviour
 
 			movementData.potentialTile = movementChoice;
 
+			yield return new WaitForSecondsRealtime(0.4f);
+
+			HandleCharacterSelectBFS();
+
+			yield return new WaitForSecondsRealtime(0.4f);
+
 			MoveCharacterTo(movementChoice.LocalPlace);
+
+			yield return new WaitForSecondsRealtime(0.5f);
 
 			if (attackingTile != null)
             {
-				combatManager.StartCombat(movementData.selectedCharacter, attackingTile.Character);
+				yield return new WaitForSecondsRealtime(0.25f);
+				combatManager.StartCombat(attackingTile.Character, movementData.selectedCharacter);
+				//combatManager.StartCombat(movementData.selectedCharacter, attackingTile.Character);
 			}
 			else
             {
-				CharacterTurnOver();
-				movementData.Reset();
-				HandleCharacterDeselectBFS();
+				WaitMovement();
             }
 
+			// After first character moved, we are done. This function must be called multiple times
+			break;
 		}
-
-		ResetEnemyCanMove();
 	}
 
 	private bool AllyTurnOver() {
@@ -235,6 +255,24 @@ public class TesterGrid : MonoBehaviour
 
 		return true;
 	}
+
+
+	private bool EnemyTurnOver()
+	{
+		foreach (GameObject enemy in enemyCharacters)
+		{
+			CharacterStats enemyData = enemy.GetComponent<CharacterStats>();
+
+			if (enemyData.CanMove)
+			{
+				return false;
+			}
+
+		}
+
+		return true;
+	}
+
 
 	private void ResetAllyCanMove() {
 		foreach (GameObject ally in allyCharacters)
@@ -336,6 +374,8 @@ public class TesterGrid : MonoBehaviour
 			return;
 		}
 
+		if (battleState != BattleState.PlayerTurn) { return; }
+
 		// check tile clicked
 		var worldPoint = new Vector3Int(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.y), 0);
 		var tiles = GridData.instance.tiles; // This is our Dictionary of tiles
@@ -395,7 +435,7 @@ public class TesterGrid : MonoBehaviour
 				movementData.Reset();
 				HandleCharacterDeselectBFS();
 
-				if (stats.Team == 0 && stats.CanMove)
+				if (stats.Team == CharacterTeam.Ally && stats.CanMove)
 				{
 					movementData.selectedCharacter = clickedTile.Character;
 					movementData.selectedCharacterStats = stats;
@@ -439,7 +479,7 @@ public class TesterGrid : MonoBehaviour
 
 				stats = clickedTile.Character.GetComponent<CharacterStats>();
 
-                if (stats.Team == 0) { break; }
+                if (stats.Team == CharacterTeam.Ally) { break; }
 
 				movementMenu.SetActive(false);
 
@@ -577,7 +617,7 @@ public class TesterGrid : MonoBehaviour
 
 		GameObject spawn = Instantiate(gameObject, spawnLocation, Quaternion.identity);
 		CharacterStats spawnStats = spawn.GetComponent<CharacterStats>();
-		spawnStats.getMovementDecision = EnemyMovementPattern.TowardsPlayerEnemyMovement;
+		spawnStats.getMovementDecision = EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack;
 
 		StatsMenuMouseOver statMenu = spawn.GetComponent<StatsMenuMouseOver>();
 

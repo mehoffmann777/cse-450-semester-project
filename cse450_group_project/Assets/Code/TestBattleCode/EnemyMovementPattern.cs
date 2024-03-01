@@ -42,6 +42,52 @@ public class EnemyMovementPattern
 	//	ResetEnemyCanMove();
 	//}
 
+	public static (BattlefieldTile, BattlefieldTile) TowardsPlayerEnemyMovementWithAttack(BattlefieldTile startTile)
+	{
+
+		CharacterStats stats = startTile.Character.GetComponent<CharacterStats>();
+		var movementLocations = MovementUtils.MovementReachableTiles(startTile, stats);
+		var movLocList = MovementUtils.MovementDictionaryToValidList(movementLocations);
+
+		Vector3 positionOfRandomAlly = GetRandomAllyPosition();
+
+		float distanceToAlly = int.MaxValue;
+		BattlefieldTile movementChoice = movLocList[0];
+
+		foreach (BattlefieldTile movTile in movLocList)
+		{
+			float dist = ManhattanDistance(movTile.LocalPlace, positionOfRandomAlly);
+
+			if (dist < distanceToAlly)
+			{
+				distanceToAlly = dist;
+				movementChoice = movTile;
+			}
+		}
+
+		Dictionary<BattlefieldTile, BattlefieldMovementTileTag> attackableTileDict = MovementUtils.AttackReachableTiles(movementChoice, stats);
+
+		BattlefieldTile tileAttack = null;
+
+		foreach (KeyValuePair<BattlefieldTile, BattlefieldMovementTileTag> pair in attackableTileDict)
+        {
+			if (pair.Value != BattlefieldMovementTileTag.Attackable) { continue; }
+
+			if (pair.Key.Character == null) { continue; }
+
+			CharacterStats charStats = pair.Key.Character.GetComponent<CharacterStats>();
+
+			if (charStats.Team != CharacterTeam.Ally) { continue; }
+
+			tileAttack = pair.Key;
+			break; // We don't need to search for more than one
+		}
+
+
+		return (movementChoice, tileAttack);
+	}
+
+
 
 	public static (BattlefieldTile, BattlefieldTile) TowardsPlayerEnemyMovement(BattlefieldTile startTile)
 	{
@@ -90,7 +136,7 @@ public class EnemyMovementPattern
 
 			if (characterStats == null) { continue; }
 
-			if (characterStats.Team != 0) { continue; }
+			if (characterStats.Team != CharacterTeam.Ally) { continue; }
 
 			locations.Add(tile.LocalPlace);
 		}
