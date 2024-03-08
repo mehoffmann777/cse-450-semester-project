@@ -2110,6 +2110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61ffb172cd4ce429a957449058d3cba9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scene: Battle-01
   choices:
   - {fileID: 1790478683}
   - {fileID: 1558336883}

@@ -9,7 +9,8 @@ using UnityEngine.SceneManagement;
 
 public class DialogueManager : MonoBehaviour
 {
-
+    [Header("Scene to Go To")]
+    [SerializeField] string scene;
     [Header("Choices UI")]
     [SerializeField] private GameObject[] choices;
     private TextMeshProUGUI[] choicesText;
@@ -110,7 +111,7 @@ public class DialogueManager : MonoBehaviour
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
         nameText.text = "";
-        SceneManager.LoadScene("TestBattle");
+        SceneManager.LoadScene(scene);
     }
     private void ContinueStory()
     {
