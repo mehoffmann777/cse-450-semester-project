@@ -14,6 +14,11 @@ public enum BattlefieldMovementTileTag {
 public class MovementUtils
 {
 
+	public static float ManhattanDistance(Vector3 v1, Vector3 v2)
+	{
+		return Mathf.Abs(v1.x - v2.x) + Mathf.Abs(v1.y - v2.y);
+	}
+
 	private static void AddTileDecreasing(LinkedList<BattlefieldTile> list, BattlefieldTile tile)
 	{
 		LinkedListNode<BattlefieldTile> n = list.First;
@@ -59,8 +64,8 @@ public class MovementUtils
 
 		Vector3Int loc;
 
-		int maxRangeInclusive = 1;
-		int minRangeInclusive = 1; // cannot attack at 0
+		int maxRangeInclusive = character.maxRangeInclusive;
+		int minRangeInclusive = character.minRangeInclusive;
 
 		tile.ReachableInDistance = 0;
 		visited.Add(tile);

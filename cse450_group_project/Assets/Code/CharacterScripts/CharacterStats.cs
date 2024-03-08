@@ -25,6 +25,9 @@ public class CharacterStats : MonoBehaviour
     public int luck;
     public int movement;
 
+    public int minRangeInclusive = 1;
+    public int maxRangeInclusive = 1;
+
     public bool CanMove = true;
     public CharacterTeam Team;
 

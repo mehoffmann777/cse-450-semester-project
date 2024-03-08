@@ -56,7 +56,7 @@ public class EnemyMovementPattern
 
 		foreach (BattlefieldTile movTile in movLocList)
 		{
-			float dist = ManhattanDistance(movTile.LocalPlace, positionOfRandomAlly);
+			float dist = MovementUtils.ManhattanDistance(movTile.LocalPlace, positionOfRandomAlly);
 
 			if (dist < distanceToAlly)
 			{
@@ -103,7 +103,7 @@ public class EnemyMovementPattern
 
 		foreach (BattlefieldTile movTile in movLocList)
 		{
-			float dist = ManhattanDistance(movTile.LocalPlace, positionOfRandomAlly);
+			float dist = MovementUtils.ManhattanDistance(movTile.LocalPlace, positionOfRandomAlly);
 
 			if (dist < distanceToAlly)
 			{
@@ -116,10 +116,7 @@ public class EnemyMovementPattern
 		return (movementChoice, null);
 	}
 
-	private static float ManhattanDistance(Vector3 v1, Vector3 v2)
-	{
-		return Mathf.Abs(v1.x - v2.x) + Mathf.Abs(v1.y - v2.y);
-	}
+	
 
 	private static Vector3 GetRandomAllyPosition()
 	{

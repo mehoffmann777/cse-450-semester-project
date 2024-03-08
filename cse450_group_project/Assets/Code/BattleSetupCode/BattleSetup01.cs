@@ -7,7 +7,7 @@ public class BattleSetup01 : BaseGridManager
 
 	public GameObject enemyInfantry;
 	public GameObject allyInfantry;
-
+    public GameObject allyRanged;
 
     public override List<CharacterSetupInfo> GetEnemySetupPattern()
     {
@@ -29,7 +29,7 @@ public class BattleSetup01 : BaseGridManager
         {
             new CharacterSetupInfo(allyInfantry, -17, -4, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
             new CharacterSetupInfo(allyInfantry, -16, -5, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
-            new CharacterSetupInfo(allyInfantry, -16, -6, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
+            new CharacterSetupInfo(allyRanged, -16, -6, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
         };
     }
 

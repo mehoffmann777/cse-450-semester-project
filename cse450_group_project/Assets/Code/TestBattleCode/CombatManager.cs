@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
+
+
 public class CombatManager : MonoBehaviour
 {
     
@@ -16,52 +18,52 @@ public class CombatManager : MonoBehaviour
     public CombatOver combatOver;
     public SpriteRenderer enemySprite;
     public SpriteRenderer allySprite;
-    public Sprite allyGridSprite;
-    public Sprite enemyGridSprite;
-    public Sprite enemyCombatSprite;
-    public Sprite allyCombatSprite;
+    private Sprite allyGridSprite;
+    private Sprite enemyGridSprite;
+    private Sprite enemyCombatSprite;
+    private Sprite allyCombatSprite;
 
     public int enemyDamage;
     public int enemyHitChance;
     public int allyDamage;
     public int allyHitChance;
 
+    public struct PredictCombatResults {
+        public int AttackerHitChance; 
+        public int DefenderHitChance;
+        public int AttackerHealth;
+        public int DefenderHealth;
+        public bool WouldKillAttacker;
+        public bool WouldKillDefender;
+    }
+
     // so enemy AI can make smart decisions about who to attack
-    public Dictionary<string, int> PredictCombat(GameObject ally, GameObject enemy)
+    public PredictCombatResults PredictCombat(GameObject attacker, GameObject defender)
     {
-        CharacterStats allyStats = ally.GetComponent<CharacterStats>();
-        CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
+        PredictCombatResults results = new();
+
+        CharacterStats attackerStats = attacker.GetComponent<CharacterStats>();
+        CharacterStats defenderStats = defender.GetComponent<CharacterStats>();
 
         // does not account for crits bc that's rolled on attack
-        allyDamage = allyStats.strength - enemyStats.defense;
-        enemyDamage = enemyStats.strength - allyStats.defense;
+        int attackerDamage = attackerStats.strength - defenderStats.defense;
+        int defenderDamage = defenderStats.strength - attackerStats.defense;
 
         // will rework stats to factor in both accuracy + opponent's something to determine dodge
         // dodge is just rolled as a set 0-10 on attack rn, but this could be changed 
-        enemyHitChance = enemyStats.accuracy;
-        allyHitChance = allyStats.accuracy;
+        results.AttackerHitChance = attackerStats.accuracy;
+        results.DefenderHitChance = defenderStats.accuracy;
 
-        int allyHealthAfterCombat = allyStats.health - enemyDamage;
-        int enemyHealthAfterCombat = enemyStats.health - allyDamage;
+        results.AttackerHealth = attackerStats.health - defenderDamage;
+        results.DefenderHealth = defenderStats.health - attackerDamage;
 
-        int wouldKillAlly = allyHealthAfterCombat <= 0 ? 1 : 0;
-        int wouldKillEnemy = enemyHealthAfterCombat <= 0 ? 1 : 0;
+        results.WouldKillAttacker = results.AttackerHealth <= 0;
+        results.WouldKillDefender = results.DefenderHealth <= 0;
 
-        Dictionary<string, int> combatPredictions = new Dictionary<string, int>{
-            { "AllyHitChance", allyHitChance },
-            { "EnemyHitChance", enemyHitChance },
-            { "AllyHealth", allyHealthAfterCombat  },
-            { "EnemyHealth", enemyHealthAfterCombat },
-            { "WouldKillAlly", wouldKillAlly },
-            { "WouldKillEnemy", wouldKillEnemy }
-
-        };
-
-        return combatPredictions;
-
+        return results;
     }
 
-    public void StartCombat(GameObject ally, GameObject enemy)
+    public void StartCombat(GameObject ally, GameObject enemy, int manhattanDistanceApart)
     {
         mainCamera.enabled = false;
         combatCamera.enabled = true;
@@ -77,8 +79,8 @@ public class CombatManager : MonoBehaviour
         enemySprite = enemy.GetComponent<SpriteRenderer>();
         allySprite = ally.GetComponent<SpriteRenderer>();
 
-        allySprite.sprite = allyCombatSprite;
-        enemySprite.sprite = enemyCombatSprite;
+        //allySprite.sprite = allyCombatSprite;
+        //enemySprite.sprite = enemyCombatSprite;
         enemySprite.flipX = true;
     
         Vector3 originalAllyPos = ally.transform.position;
@@ -89,49 +91,58 @@ public class CombatManager : MonoBehaviour
 
         // coroutine is so I can use wait in attack, otherwise it cuts back
         // to the grid before you can watch the combat
-        StartCoroutine(Attack(ally, enemy, originalAllyPos, originalEnemyPos));
+        StartCoroutine(Attack(ally, enemy, originalAllyPos, originalEnemyPos, manhattanDistanceApart));
         
     }
 
     // this function is HUGE and I'll prob break it up
-    public IEnumerator Attack(GameObject ally, GameObject enemy, Vector3 originalAllyPos, Vector3 originalEnemyPos)
+    public IEnumerator Attack(GameObject ally, GameObject enemy, Vector3 originalAllyPos, Vector3 originalEnemyPos, int manhattanDistanceApart)
     {
 
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
 
+        Color atttackerTextColor = allyStats.Team == CharacterTeam.Ally ? Color.white : Color.red;
+        Color defenderTextColor = enemyStats.Team == CharacterTeam.Ally ? Color.white : Color.red;
+
+        string attackerName = allyStats.Team == CharacterTeam.Ally ? "Player " : "Enemy ";
+        string defenderName = enemyStats.Team == CharacterTeam.Ally ? "Player " : "Enemy ";
+
+
         int enemyDodge = Random.Range(0, 10);
         int criticalHit = Random.Range(0, 100);
-        attackText.color = Color.white;
+        attackText.color = atttackerTextColor;
         if (allyStats.accuracy > enemyDodge)
         {
             bool crit = allyStats.luck > criticalHit;
             int damage = (allyStats.strength * (crit ? 2 : 1)) - enemyStats.defense;
             enemyStats.health -= damage;
-            attackText.text = "Player " + (crit ? "Critical " : "") + "Hit " + damage;
+            attackText.text = attackerName + (crit ? "Critical " : "") + "Hit " + damage;
         }
         else
         {
-            attackText.text = "Player Miss";
+            attackText.text = attackerName + "Miss";
         }
 
         yield return new WaitForSecondsRealtime(3f);
 
-        if (enemyStats.health > 0)
+        bool defenderCanCounterAttack = enemyStats.minRangeInclusive <= manhattanDistanceApart && enemyStats.maxRangeInclusive >= manhattanDistanceApart;
+
+        if (enemyStats.health > 0 && defenderCanCounterAttack)
         {
             int playerDodge = Random.Range(0, 10);
 
-            attackText.color = Color.red;
+            attackText.color = defenderTextColor;
             if (enemyStats.accuracy > playerDodge)
             {
                 criticalHit = Random.Range(0, 100);
                 bool encrit = enemyStats.luck > criticalHit;
                 int endamage = (enemyStats.strength * (encrit ? 2 : 1)) - allyStats.defense;
                 allyStats.health -= endamage;
-                attackText.text = "Enemy " + (encrit ? "Critical " : "") + "Hit " + endamage;
+                attackText.text = defenderName + (encrit ? "Critical " : "") + "Hit " + endamage;
             } else
             {
-                attackText.text = "Enemy Miss";
+                attackText.text = defenderName + "Miss";
             }
             yield return new WaitForSecondsRealtime(3f);
         }
@@ -152,8 +163,8 @@ public class CombatManager : MonoBehaviour
         }
 
 
-        allySprite.sprite = allyGridSprite;
-        enemySprite.sprite = enemyGridSprite;
+        //allySprite.sprite = allyGridSprite;
+        //enemySprite.sprite = enemyGridSprite;
         enemySprite.flipX = false;
         ally.transform.position = originalAllyPos;
         enemy.transform.position = originalEnemyPos;

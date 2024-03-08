@@ -29,23 +29,6 @@ public class GridData : MonoBehaviour
 
     private void GetWorldTiles()
     {
-
-        //    public Vector3Int localPlace { get; set; }
-
-        //public Vector3 worldLocation { get; set; }
-
-        //public TileBase tileBase { get; set; }
-
-        //public Tilemap tilemapMember { get; set; }
-
-        //public string name { get; set; }
-
-        //public int movementCost { get; set; }
-
-        //public bool impassable { get; set; }
-
-
-
         tiles = new Dictionary<Vector3, BattlefieldTile>();
         foreach (Vector3Int pos in Tilemap.cellBounds.allPositionsWithin)
         {
@@ -57,10 +40,16 @@ public class GridData : MonoBehaviour
             Tile tile = (Tile) Tilemap.GetTile(localPlace);
             string spriteName = tile.sprite.name;
 
-            bool isRoughTerain = spriteName.Equals("tilemap_packed_108") || spriteName.Equals("tilemap_packed_112");
+            Dictionary<string, int> terrainValues = new Dictionary<string, int> {
+                { "tilemap_packed_108"  , 2 },
+                { "tilemap_packed_112"  , 2 },
+                { "tilemap_packed_0"    , 1 },
+                { "tilemap_packed_1"    , 1 },
+                { "tilemap_packed_2"    , 1 }
+            };
 
-            bool isWater = !isRoughTerain && !spriteName.Equals("tilemap_packed_0") && !spriteName.Equals("tilemap_packed_1");
 
+            int movementCost = terrainValues.GetValueOrDefault(spriteName, -1);
 
 
             var bTile = new BattlefieldTile
@@ -70,8 +59,8 @@ public class GridData : MonoBehaviour
                 TileBase = Tilemap.GetTile(localPlace),
                 TilemapMember = Tilemap,
                 Name = localPlace.x + "," + localPlace.y,
-                MovementCost = isRoughTerain ? 2 : 1,
-                Impassable = isWater,
+                MovementCost = movementCost,
+                Impassable = movementCost == -1,
                 Character = null,
                 ReachableInDistance = int.MaxValue
             };

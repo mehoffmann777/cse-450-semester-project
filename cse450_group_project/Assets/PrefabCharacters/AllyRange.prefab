@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5668496726391297848}
   - component: {fileID: -2832533676417534112}
   m_Layer: 0
-  m_Name: AllyInfantry
+  m_Name: AllyRange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -943146839, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
+  m_Sprite: {fileID: -1758494641, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -99,15 +99,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 15
+  health: 10
   stamina: 7
-  strength: 10
-  accuracy: 5
-  defense: 5
-  luck: 7
-  movement: 3
-  minRangeInclusive: 1
-  maxRangeInclusive: 1
+  strength: 8
+  accuracy: 9
+  defense: 2
+  luck: 8
+  movement: 4
+  minRangeInclusive: 2
+  maxRangeInclusive: 4
   CanMove: 1
   Team: 0
   inCombat: 0

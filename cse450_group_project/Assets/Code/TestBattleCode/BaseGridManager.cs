@@ -254,8 +254,11 @@ public abstract class BaseGridManager : MonoBehaviour
 			if (attackingTile != null)
             {
 				yield return new WaitForSecondsRealtime(0.25f);
-				combatManager.StartCombat(attackingTile.Character, movementData.selectedCharacter);
-				//combatManager.StartCombat(movementData.selectedCharacter, attackingTile.Character);
+
+				int distance = (int) MovementUtils.ManhattanDistance(attackingTile.LocalPlace, movementData.potentialTile.LocalPlace);
+
+				//combatManager.StartCombat(attackingTile.Character, movementData.selectedCharacter);
+				combatManager.StartCombat(movementData.selectedCharacter, attackingTile.Character, distance);
 			}
 			else
             {
@@ -508,7 +511,9 @@ public abstract class BaseGridManager : MonoBehaviour
 
 				movementMenu.SetActive(false);
 
-				combatManager.StartCombat(movementData.selectedCharacter, clickedTile.Character);
+				int distance = (int) MovementUtils.ManhattanDistance(clickedTile.LocalPlace, movementData.potentialTile.LocalPlace);
+
+				combatManager.StartCombat(movementData.selectedCharacter, clickedTile.Character, distance);
 
 				break;
 		}
