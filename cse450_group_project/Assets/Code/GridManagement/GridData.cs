@@ -57,7 +57,7 @@ public class GridData : MonoBehaviour
             Tile tile = (Tile) Tilemap.GetTile(localPlace);
             string spriteName = tile.sprite.name;
 
-            bool isRoughTerain = spriteName.Equals("tilemap_packed_108");
+            bool isRoughTerain = spriteName.Equals("tilemap_packed_108") || spriteName.Equals("tilemap_packed_112");
 
             bool isWater = !isRoughTerain && !spriteName.Equals("tilemap_packed_0") && !spriteName.Equals("tilemap_packed_1");
 
