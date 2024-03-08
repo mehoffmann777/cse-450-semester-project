@@ -13,12 +13,12 @@ public class BattleSetup01 : BaseGridManager
     {
         return new List<CharacterSetupInfo>
         {
-            new CharacterSetupInfo(enemyInfantry, 16, 6, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
-            new CharacterSetupInfo(enemyInfantry, 15, 6, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
-            new CharacterSetupInfo(enemyInfantry, 16, -6, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
-            new CharacterSetupInfo(enemyInfantry, 16, -7, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
-            new CharacterSetupInfo(enemyInfantry, 15, -5, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
-            new CharacterSetupInfo(enemyInfantry, 15, -4, EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack),
+            new CharacterSetupInfo(enemyInfantry, 16, 6, EnemyMovementPattern.AttackMinHealth),
+            new CharacterSetupInfo(enemyInfantry, 15, 6, EnemyMovementPattern.AttackMinHealth),
+            new CharacterSetupInfo(enemyInfantry, 16, -6, EnemyMovementPattern.AttackMinHealth),
+            new CharacterSetupInfo(enemyInfantry, 16, -7, EnemyMovementPattern.AttackMinHealth),
+            new CharacterSetupInfo(enemyInfantry, 15, -5, EnemyMovementPattern.AttackMinHealth),
+            new CharacterSetupInfo(enemyInfantry, 15, -4, EnemyMovementPattern.AttackMinHealth),
         };
 
     }

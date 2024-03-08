@@ -55,6 +55,21 @@ public class MovementUtils
 		return tileList;
     }
 
+	public static List<BattlefieldTile> MovementDictToListWithTag(Dictionary<BattlefieldTile, BattlefieldMovementTileTag> dictionary, BattlefieldMovementTileTag validTag)
+	{
+		List<BattlefieldTile> tileList = new();
+
+		foreach (KeyValuePair<BattlefieldTile, BattlefieldMovementTileTag> pair in dictionary)
+		{
+			if (pair.Value == validTag)
+			{
+				tileList.Add(pair.Key);
+			}
+		}
+
+		return tileList;
+	}
+
 	public static Dictionary<BattlefieldTile, BattlefieldMovementTileTag> AttackReachableTiles(BattlefieldTile tile, CharacterStats character)
     {
 		LinkedList<BattlefieldTile> queue = new();
@@ -200,5 +215,97 @@ public class MovementUtils
 
 		return movementLocations;
 	}
+
+
+	// Assumes can move through enemy (only)
+	public static BattlefieldTile TileInSetClosestOnMinPathToAGoal(BattlefieldTile searchStart, HashSet<BattlefieldTile> validMovementReturns, HashSet<BattlefieldTile> goalStates)
+    {
+		Dictionary<BattlefieldTile, BattlefieldTile> lastTileInValidMovementReturns = new();
+
+
+		Dictionary<BattlefieldTile, BattlefieldMovementTileTag> movementLocations = new();
+		LinkedList<BattlefieldTile> queue = new();
+
+		var tiles = GridData.instance.tiles;
+
+		Vector3Int loc;
+
+		searchStart.ReachableInDistance = 0;
+		movementLocations[searchStart] = BattlefieldMovementTileTag.Reachable;
+		lastTileInValidMovementReturns.Add(searchStart, searchStart); // We can always not move
+
+		queue.AddFirst(searchStart);
+
+		while (queue.Count > 0)
+		{
+			LinkedListNode<BattlefieldTile> thisTile = queue.Last;
+			queue.RemoveLast();
+
+
+			BattlefieldTile thisTileRetun = lastTileInValidMovementReturns.GetValueOrDefault(thisTile.Value, searchStart);
+
+			if (goalStates.Contains(thisTile.Value))
+            {
+				return thisTileRetun;
+			}
+
+
+			loc = thisTile.Value.LocalPlace;
+
+			Vector3Int upLoc = loc;
+			upLoc.y++;
+
+			Vector3Int downLoc = loc;
+			downLoc.y--;
+
+			Vector3Int rightLoc = loc;
+			rightLoc.x++;
+
+			Vector3Int leftLoc = loc;
+			leftLoc.x--;
+
+			Vector3Int[] locToCheck = { upLoc, downLoc, rightLoc, leftLoc };
+
+			BattlefieldTile tileToCheck;
+
+			foreach (Vector3Int possibleLoc in locToCheck)
+			{
+
+				if (tiles.TryGetValue(possibleLoc, out tileToCheck))
+				{
+
+					if (movementLocations.ContainsKey(tileToCheck) && movementLocations[tileToCheck] != BattlefieldMovementTileTag.None) { continue; }
+
+					if (tileToCheck.Impassable) { continue; }
+
+					//Cannot move through other team
+					if (tileToCheck.Character && tileToCheck.Character.GetComponent<CharacterStats>().Team != CharacterTeam.Enemy) { continue; }
+
+					tileToCheck.ReachableInDistance = thisTile.Value.ReachableInDistance + tileToCheck.MovementCost;
+
+
+					lastTileInValidMovementReturns.Add(tileToCheck, thisTileRetun);
+					if (tileToCheck.Character != null)
+					{
+						movementLocations[tileToCheck] = BattlefieldMovementTileTag.BlockedByAlly;
+					}
+					else
+					{
+						movementLocations[tileToCheck] = BattlefieldMovementTileTag.Reachable;
+
+						if (validMovementReturns.Contains(tileToCheck))
+                        {
+							lastTileInValidMovementReturns[tileToCheck] = tileToCheck;
+                        }
+					}
+
+					AddTileDecreasing(queue, tileToCheck);
+				}
+			}
+		}
+
+		return searchStart;
+    }
+
 
 }

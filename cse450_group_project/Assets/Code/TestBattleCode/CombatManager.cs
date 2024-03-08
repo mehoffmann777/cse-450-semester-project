@@ -38,12 +38,9 @@ public class CombatManager : MonoBehaviour
     }
 
     // so enemy AI can make smart decisions about who to attack
-    public PredictCombatResults PredictCombat(GameObject attacker, GameObject defender)
+    public static PredictCombatResults PredictCombat(CharacterStats attackerStats, CharacterStats defenderStats)
     {
         PredictCombatResults results = new();
-
-        CharacterStats attackerStats = attacker.GetComponent<CharacterStats>();
-        CharacterStats defenderStats = defender.GetComponent<CharacterStats>();
 
         // does not account for crits bc that's rolled on attack
         int attackerDamage = attackerStats.strength - defenderStats.defense;

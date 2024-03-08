@@ -89,6 +89,59 @@ public class EnemyMovementPattern
 
 
 
+
+	public static (BattlefieldTile, BattlefieldTile) AttackMinHealth(BattlefieldTile startTile)
+	{
+
+		CharacterStats stats = startTile.Character.GetComponent<CharacterStats>();
+
+		// Determine who to attack
+		List<BattlefieldTile> allAllies = GetAllAllyTiles();
+		BattlefieldTile allyToAttack = allAllies[0];
+		int minHealth = int.MaxValue;
+
+		foreach (BattlefieldTile allyTile in allAllies)
+        {
+			CombatManager.PredictCombatResults combatResults = CombatManager.PredictCombat(stats, allyTile.Character.GetComponent<CharacterStats>());
+
+			if (combatResults.DefenderHealth < minHealth)
+            {
+				minHealth = combatResults.DefenderHealth;
+				allyToAttack = allyTile;
+            }
+
+        }
+
+		// Setup for search
+		var movementLocations = MovementUtils.MovementReachableTiles(startTile, stats);
+		HashSet<BattlefieldTile> movementLocationSet = new HashSet<BattlefieldTile>(MovementUtils.MovementDictionaryToValidList(movementLocations));
+
+		// Find tiles that can attack the ally based on enemy range stats
+		var attackableGoalTiles = MovementUtils.AttackReachableTiles(allyToAttack, stats);
+		HashSet<BattlefieldTile> attackableGoalSet = new HashSet<BattlefieldTile>(MovementUtils.MovementDictToListWithTag(attackableGoalTiles, BattlefieldMovementTileTag.Attackable));
+
+
+		BattlefieldTile movementChoice = MovementUtils.TileInSetClosestOnMinPathToAGoal(startTile, movementLocationSet, attackableGoalSet);
+
+		var attackableTiles = MovementUtils.AttackReachableTiles(movementChoice, stats);
+
+		BattlefieldTile tileAttack = null;
+		BattlefieldMovementTileTag attackTag = attackableTiles.GetValueOrDefault(allyToAttack, BattlefieldMovementTileTag.None);
+
+		if (attackTag == BattlefieldMovementTileTag.Attackable)
+        {
+			tileAttack = allyToAttack;
+        }
+
+
+		return (movementChoice, tileAttack);
+	}
+
+
+
+
+
+
 	public static (BattlefieldTile, BattlefieldTile) TowardsPlayerEnemyMovement(BattlefieldTile startTile)
 	{
 
@@ -143,4 +196,28 @@ public class EnemyMovementPattern
 	}
 
 
+	private static List<BattlefieldTile> GetAllAllyTiles()
+    {
+		List<BattlefieldTile> locations = new();
+
+		foreach (BattlefieldTile tile in GridData.instance.tiles.Values)
+		{
+			GameObject character = tile.Character;
+
+			if (character == null) { continue; }
+
+			CharacterStats characterStats = character.GetComponent<CharacterStats>();
+
+			if (characterStats == null) { continue; }
+
+			if (characterStats.Team != CharacterTeam.Ally) { continue; }
+
+			locations.Add(tile);
+		}
+
+		return locations;
+	}
 }
+
+
+
