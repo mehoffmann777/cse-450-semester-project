@@ -217,9 +217,15 @@ public class MovementUtils
 	}
 
 
+	public struct TileInSetToGoalReturn{
+		public BattlefieldTile tileToMoveTo;
+		public int totalPathDistance;
+    }
+
 	// Assumes can move through enemy (only)
-	public static BattlefieldTile TileInSetClosestOnMinPathToAGoal(BattlefieldTile searchStart, HashSet<BattlefieldTile> validMovementReturns, HashSet<BattlefieldTile> goalStates)
+	public static TileInSetToGoalReturn TileInSetClosestOnMinPathToAGoal(BattlefieldTile searchStart, HashSet<BattlefieldTile> validMovementReturns, HashSet<BattlefieldTile> goalStates)
     {
+		TileInSetToGoalReturn returnData = new();
 		Dictionary<BattlefieldTile, BattlefieldTile> lastTileInValidMovementReturns = new();
 
 
@@ -246,7 +252,10 @@ public class MovementUtils
 
 			if (goalStates.Contains(thisTile.Value))
             {
-				return thisTileRetun;
+				returnData.tileToMoveTo = thisTileRetun;
+				returnData.totalPathDistance = thisTile.Value.ReachableInDistance;
+
+				return returnData;
 			}
 
 
@@ -304,8 +313,11 @@ public class MovementUtils
 			}
 		}
 
-		return searchStart;
-    }
+		returnData.tileToMoveTo = searchStart;
+		returnData.totalPathDistance = -1;
+
+		return returnData;
+	}
 
 
 }

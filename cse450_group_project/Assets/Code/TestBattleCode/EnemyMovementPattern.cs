@@ -121,7 +121,8 @@ public class EnemyMovementPattern
 		HashSet<BattlefieldTile> attackableGoalSet = new HashSet<BattlefieldTile>(MovementUtils.MovementDictToListWithTag(attackableGoalTiles, BattlefieldMovementTileTag.Attackable));
 
 
-		BattlefieldTile movementChoice = MovementUtils.TileInSetClosestOnMinPathToAGoal(startTile, movementLocationSet, attackableGoalSet);
+		MovementUtils.TileInSetToGoalReturn movementDataReturn = MovementUtils.TileInSetClosestOnMinPathToAGoal(startTile, movementLocationSet, attackableGoalSet);
+		BattlefieldTile movementChoice = movementDataReturn.tileToMoveTo;
 
 		var attackableTiles = MovementUtils.AttackReachableTiles(movementChoice, stats);
 
@@ -136,6 +137,75 @@ public class EnemyMovementPattern
 
 		return (movementChoice, tileAttack);
 	}
+
+
+
+	public static (BattlefieldTile, BattlefieldTile) MaximizeTotalDamageImmediate(BattlefieldTile startTile)
+	{
+
+		CharacterStats stats = startTile.Character.GetComponent<CharacterStats>();
+
+
+		// Setup for search
+		var movementLocations = MovementUtils.MovementReachableTiles(startTile, stats);
+		HashSet<BattlefieldTile> movementLocationSet = new HashSet<BattlefieldTile>(MovementUtils.MovementDictionaryToValidList(movementLocations));
+
+
+
+		// Determine who to attack
+		List<BattlefieldTile> allAllies = GetAllAllyTiles();
+		BattlefieldTile allyToAttack = allAllies[0];
+		float maxDamageInTurns = 0;
+
+		BattlefieldTile movementChoice = startTile;
+
+
+		foreach (BattlefieldTile allyTile in allAllies)
+		{
+			CombatManager.PredictCombatResults combatResults = CombatManager.PredictCombat(stats, allyTile.Character.GetComponent<CharacterStats>());
+
+			// Find tiles that can attack the ally based on enemy range stats
+			var attackableGoalTiles = MovementUtils.AttackReachableTiles(allyTile, stats);
+			HashSet<BattlefieldTile> attackableGoalSet = new HashSet<BattlefieldTile>(MovementUtils.MovementDictToListWithTag(attackableGoalTiles, BattlefieldMovementTileTag.Attackable));
+
+			MovementUtils.TileInSetToGoalReturn movementDataReturn = MovementUtils.TileInSetClosestOnMinPathToAGoal(startTile, movementLocationSet, attackableGoalSet);
+
+			int turnsForFullPath = (movementDataReturn.totalPathDistance / stats.movement);
+
+			if (turnsForFullPath < 1)
+            {
+				turnsForFullPath = 1;
+            }
+
+			float damageInTurns = (combatResults.AttackerDamageIfHit * combatResults.AttackerHitChance) / turnsForFullPath;
+
+			if (damageInTurns > maxDamageInTurns)
+            {
+				maxDamageInTurns = damageInTurns;
+				allyToAttack = allyTile;
+				movementChoice = movementDataReturn.tileToMoveTo;
+			}
+
+		}
+
+
+		var attackableTiles = MovementUtils.AttackReachableTiles(movementChoice, stats);
+
+		BattlefieldTile tileAttack = null;
+		BattlefieldMovementTileTag attackTag = attackableTiles.GetValueOrDefault(allyToAttack, BattlefieldMovementTileTag.None);
+
+		if (attackTag == BattlefieldMovementTileTag.Attackable)
+		{
+			tileAttack = allyToAttack;
+		}
+
+
+		return (movementChoice, tileAttack);
+	}
+
+
+
+
 
 
 

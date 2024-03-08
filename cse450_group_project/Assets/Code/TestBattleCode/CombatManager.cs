@@ -29,10 +29,12 @@ public class CombatManager : MonoBehaviour
     public int allyHitChance;
 
     public struct PredictCombatResults {
-        public int AttackerHitChance; 
-        public int DefenderHitChance;
+        public float AttackerHitChance; 
+        public float DefenderHitChance;
         public int AttackerHealth;
         public int DefenderHealth;
+        public int AttackerDamageIfHit;
+        public int DefenderDamageIfHit;
         public bool WouldKillAttacker;
         public bool WouldKillDefender;
     }
@@ -43,16 +45,16 @@ public class CombatManager : MonoBehaviour
         PredictCombatResults results = new();
 
         // does not account for crits bc that's rolled on attack
-        int attackerDamage = attackerStats.strength - defenderStats.defense;
-        int defenderDamage = defenderStats.strength - attackerStats.defense;
+        results.AttackerDamageIfHit = attackerStats.strength - defenderStats.defense;
+        results.DefenderDamageIfHit = defenderStats.strength - attackerStats.defense;
 
         // will rework stats to factor in both accuracy + opponent's something to determine dodge
         // dodge is just rolled as a set 0-10 on attack rn, but this could be changed 
-        results.AttackerHitChance = attackerStats.accuracy;
-        results.DefenderHitChance = defenderStats.accuracy;
+        results.AttackerHitChance = attackerStats.accuracy / 10.0f;
+        results.DefenderHitChance = defenderStats.accuracy / 10.0f;
 
-        results.AttackerHealth = attackerStats.health - defenderDamage;
-        results.DefenderHealth = defenderStats.health - attackerDamage;
+        results.AttackerHealth = attackerStats.health - results.DefenderDamageIfHit;
+        results.DefenderHealth = defenderStats.health - results.AttackerDamageIfHit;
 
         results.WouldKillAttacker = results.AttackerHealth <= 0;
         results.WouldKillDefender = results.DefenderHealth <= 0;

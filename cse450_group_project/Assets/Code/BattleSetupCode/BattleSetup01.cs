@@ -6,19 +6,21 @@ public class BattleSetup01 : BaseGridManager
 {
 
 	public GameObject enemyInfantry;
-	public GameObject allyInfantry;
+    public GameObject enemyRanged;
+
+    public GameObject allyInfantry;
     public GameObject allyRanged;
 
     public override List<CharacterSetupInfo> GetEnemySetupPattern()
     {
         return new List<CharacterSetupInfo>
         {
-            new CharacterSetupInfo(enemyInfantry, 16, 6, EnemyMovementPattern.AttackMinHealth),
-            new CharacterSetupInfo(enemyInfantry, 15, 6, EnemyMovementPattern.AttackMinHealth),
+            new CharacterSetupInfo(enemyInfantry, 16, 6, EnemyMovementPattern.MaximizeTotalDamageImmediate),
+            new CharacterSetupInfo(enemyRanged, 15, 6, EnemyMovementPattern.MaximizeTotalDamageImmediate),
             new CharacterSetupInfo(enemyInfantry, 16, -6, EnemyMovementPattern.AttackMinHealth),
-            new CharacterSetupInfo(enemyInfantry, 16, -7, EnemyMovementPattern.AttackMinHealth),
+            new CharacterSetupInfo(enemyInfantry, 16, -7, EnemyMovementPattern.MaximizeTotalDamageImmediate),
             new CharacterSetupInfo(enemyInfantry, 15, -5, EnemyMovementPattern.AttackMinHealth),
-            new CharacterSetupInfo(enemyInfantry, 15, -4, EnemyMovementPattern.AttackMinHealth),
+            new CharacterSetupInfo(enemyRanged, 15, -4, EnemyMovementPattern.MaximizeTotalDamageImmediate),
         };
 
     }

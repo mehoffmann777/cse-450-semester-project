@@ -1816,10 +1816,6 @@ MonoBehaviour:
   turnUI: {fileID: 1920211805}
   enemySprite: {fileID: 0}
   allySprite: {fileID: 0}
-  allyGridSprite: {fileID: -943146839, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
-  enemyGridSprite: {fileID: 1656345257, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
-  enemyCombatSprite: {fileID: -38225528, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
-  allyCombatSprite: {fileID: 1671081441, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
   enemyDamage: 0
   enemyHitChance: 0
   allyDamage: 0
@@ -4365,6 +4361,7 @@ MonoBehaviour:
   mainCamera: {fileID: 770763673}
   combatCamera: {fileID: 787826356}
   enemyInfantry: {fileID: 1744878082758574427, guid: 17329ff58138542c1ad24f3bb0f5bce1, type: 3}
+  enemyRanged: {fileID: 1744878082758574427, guid: dc860b6670eb24203981658e1d8b78e7, type: 3}
   allyInfantry: {fileID: 1744878082758574427, guid: 9896407788dc64b418b1a22ee8de7074, type: 3}
   allyRanged: {fileID: 1744878082758574427, guid: 1cec0990e3301432594ba2737e28f195, type: 3}
 --- !u!1 &1164993754
