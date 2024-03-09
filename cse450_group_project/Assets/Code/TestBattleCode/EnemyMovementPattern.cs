@@ -159,7 +159,6 @@ public class EnemyMovementPattern
 
 		BattlefieldTile movementChoice = startTile;
 
-
 		foreach (BattlefieldTile allyTile in allAllies)
 		{
 			CombatManager.PredictCombatResults combatResults = CombatManager.PredictCombat(stats, allyTile.Character.GetComponent<CharacterStats>());
@@ -170,14 +169,9 @@ public class EnemyMovementPattern
 
 			MovementUtils.TileInSetToGoalReturn movementDataReturn = MovementUtils.TileInSetClosestOnMinPathToAGoal(startTile, movementLocationSet, attackableGoalSet);
 
-			int turnsForFullPath = (movementDataReturn.totalPathDistance / stats.movement);
+			float turnsForFullPath = Mathf.Ceil(movementDataReturn.totalPathDistance / (float) stats.movement);
 
-			if (turnsForFullPath < 1)
-            {
-				turnsForFullPath = 1;
-            }
-
-			float damageInTurns = (combatResults.AttackerDamageIfHit * combatResults.AttackerHitChance) / turnsForFullPath;
+			float damageInTurns = combatResults.AttackerDamageIfHit / turnsForFullPath;
 
 			if (damageInTurns > maxDamageInTurns)
             {
@@ -198,6 +192,14 @@ public class EnemyMovementPattern
 		{
 			tileAttack = allyToAttack;
 		}
+
+
+		if (tileAttack != null)
+        {
+			Debug.Log("tileToAttack " + tileAttack.LocalPlace.x + " " + tileAttack.LocalPlace.y);
+        }
+
+
 
 
 		return (movementChoice, tileAttack);

@@ -239,7 +239,7 @@ public class MovementUtils
 		searchStart.ReachableInDistance = 0;
 		movementLocations[searchStart] = BattlefieldMovementTileTag.Reachable;
 		lastTileInValidMovementReturns.Add(searchStart, searchStart); // We can always not move
-
+		
 		queue.AddFirst(searchStart);
 
 		while (queue.Count > 0)
@@ -250,7 +250,7 @@ public class MovementUtils
 
 			BattlefieldTile thisTileRetun = lastTileInValidMovementReturns.GetValueOrDefault(thisTile.Value, searchStart);
 
-			if (goalStates.Contains(thisTile.Value))
+			if (goalStates.Contains(thisTile.Value) && thisTile.Value.Character == null)
             {
 				returnData.tileToMoveTo = thisTileRetun;
 				returnData.totalPathDistance = thisTile.Value.ReachableInDistance;
