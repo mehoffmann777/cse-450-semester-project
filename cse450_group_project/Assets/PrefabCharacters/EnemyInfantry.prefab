@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingHealth: 10
   health: 10
   stamina: 5
   strength: 8
@@ -106,8 +107,11 @@ MonoBehaviour:
   defense: 2
   luck: 5
   movement: 3
+  minRangeInclusive: 1
+  maxRangeInclusive: 1
   CanMove: 1
   Team: 1
+  inCombat: 0
 --- !u!114 &5286612575269743012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,7 +124,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f6bc1bb953241d3a98003d300ccf4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statMenu: {fileID: 0}
 --- !u!61 &2705167468203348622
 BoxCollider2D:
   m_ObjectHideFlags: 0

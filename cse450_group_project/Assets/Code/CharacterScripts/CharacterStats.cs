@@ -17,6 +17,7 @@ public enum CharacterTeam
 public class CharacterStats : MonoBehaviour
 {
 
+    public int startingHealth;
     public int health;
     public int stamina;
     public int strength;
@@ -34,4 +35,5 @@ public class CharacterStats : MonoBehaviour
     public GetMovementDecision getMovementDecision;
 
     public bool inCombat = false;
+
 }
