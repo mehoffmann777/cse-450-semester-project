@@ -93,11 +93,11 @@ public abstract class BaseGridManager : MonoBehaviour
 		var screenRect = Camera.main.pixelRect;
 
 
-		var rectTransPoint = new Vector3(
-			screenPoint.x - screenRect.width / 2.0f,
-			screenPoint.y - screenRect.height / 2.0f,
-			screenPoint.z);
-		rectTransform.SetLocalPositionAndRotation(rectTransPoint, Quaternion.identity);
+		//var rectTransPoint = new Vector3(
+		//	screenPoint.x - screenRect.width / 4.0f,
+		//	screenPoint.y - screenRect.height / 4.0f,
+		//	screenPoint.z);
+		//rectTransform.SetLocalPositionAndRotation(rectTransPoint, Quaternion.identity);
 
 		PlaceCharacters();
 
