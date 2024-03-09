@@ -194,14 +194,6 @@ public class EnemyMovementPattern
 		}
 
 
-		if (tileAttack != null)
-        {
-			Debug.Log("tileToAttack " + tileAttack.LocalPlace.x + " " + tileAttack.LocalPlace.y);
-        }
-
-
-
-
 		return (movementChoice, tileAttack);
 	}
 

@@ -239,7 +239,7 @@ public class MovementUtils
 		searchStart.ReachableInDistance = 0;
 		movementLocations[searchStart] = BattlefieldMovementTileTag.Reachable;
 		lastTileInValidMovementReturns.Add(searchStart, searchStart); // We can always not move
-		
+
 		queue.AddFirst(searchStart);
 
 		while (queue.Count > 0)
