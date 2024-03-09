@@ -13,15 +13,25 @@ public class StatsMenuMouseOver : MonoBehaviour
     public void Start()
     {
         stats = GetComponent<CharacterStats>();
+      
     }
 
+   
     public void OnMouseOver()
     {
+        if (stats.Team == CharacterTeam.Ally && !stats.inCombat)
+        {
+            GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
+        }
         mouseOverStats(stats);
     }
 
     public void OnMouseExit()
     {
+        if (stats.CanMove)
+        {
+            GetComponent<SpriteRenderer>().color = new Color(1,1,1,1);
+        }
         mouseLeave();
     }
 }
