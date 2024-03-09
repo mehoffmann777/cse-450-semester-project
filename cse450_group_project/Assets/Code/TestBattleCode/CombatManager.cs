@@ -64,6 +64,10 @@ public class CombatManager : MonoBehaviour
 
     public void StartCombat(GameObject ally, GameObject enemy, int manhattanDistanceApart)
     {
+
+        ally.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        enemy.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+
         mainCamera.enabled = false;
         combatCamera.enabled = true;
         turnUI.enabled = false;
@@ -148,6 +152,8 @@ public class CombatManager : MonoBehaviour
         //allyStats.CanMove = false;
         //ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
 
+        ally.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+        enemy.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         combatCamera.enabled = false;
         mainCamera.enabled = true;
 
