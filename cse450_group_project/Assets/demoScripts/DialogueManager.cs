@@ -87,7 +87,10 @@ public class DialogueManager : MonoBehaviour
         // HAD THIS TOO: || Input.GetMouseButtonDown(0)
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetMouseButtonDown(0))
         {
-            ContinueStory();
+            if (currentStory.currentChoices.Count==0)
+            {
+                ContinueStory();
+            }
         }
     }
 
@@ -107,6 +110,7 @@ public class DialogueManager : MonoBehaviour
         //      AND do something different when dialogue is not playing.
         //      Otherwise, we may get some buttons having mutliple effects.
         yield return new WaitForSeconds(bufferSpeedPostDialogue);
+        Debug.Log("Exit Dialogure Mode Called");
         dialogueIsPlaying = false;
         dialoguePanel.SetActive(false);
         dialogueText.text = "";
@@ -200,6 +204,10 @@ public class DialogueManager : MonoBehaviour
     }
     public void MakeChoice(int choiceIndex)
     {
+        if(choiceIndex >= choices.Length)
+        {
+            return;
+        }
         Debug.Log("choice made was: " + choiceIndex);
         currentStory.ChooseChoiceIndex(choiceIndex);
     }

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 666072933235770902}
   - component: {fileID: 4323591907958266320}
   - component: {fileID: 1937687582199595794}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Land
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -364,7 +364,7 @@ TilemapRenderer:
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
-  m_SortOrder: 0
+  m_SortOrder: 2
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
@@ -489,7 +489,7 @@ Transform:
   m_GameObject: {fileID: 1113260870309907594}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.94, y: 1.06, z: 0}
+  m_LocalPosition: {x: 8.94, y: 1.06, z: -15}
   m_LocalScale: {x: 0.1074, y: 0.1074, z: 0.1074}
   m_ConstrainProportionsScale: 0
   m_Children: []

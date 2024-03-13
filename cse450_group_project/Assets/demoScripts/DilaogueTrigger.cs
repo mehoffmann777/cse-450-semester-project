@@ -29,7 +29,7 @@ public class DilaogueTrigger : MonoBehaviour
         if (!DialogueManager.GetInstance().dialogueIsPlaying)
         {
             DialogueManager.GetInstance().EnterDilaogueMode(inkJSON);
-            Debug.Log("entered if statement in trigger dialogue");
+           // Debug.Log("entered if statement in trigger dialogue");
         }
     }
    
