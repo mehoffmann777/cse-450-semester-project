@@ -404,19 +404,20 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	private void MoveMenuTo(Vector3 point)
     {
-		var rectTransform = movementMenu.GetComponent<RectTransform>();
-		var screenPoint = Camera.main.WorldToScreenPoint(point);
+		return;
+		//var rectTransform = movementMenu.GetComponent<RectTransform>();
+		//var screenPoint = Camera.main.WorldToScreenPoint(point);
 
-		var screenRect = Camera.main.pixelRect;
+		//var screenRect = Camera.main.pixelRect;
 
-		var rectTransPoint = new Vector3(
-			screenPoint.x - screenRect.width / 2.0f,
-			screenPoint.y - screenRect.height / 2.0f,
-			screenPoint.z
-		);
+		//var rectTransPoint = new Vector3(
+		//	screenPoint.x - screenRect.width / 2.0f,
+		//	screenPoint.y - screenRect.height / 2.0f,
+		//	screenPoint.z
+		//);
 
 
-		rectTransform.SetLocalPositionAndRotation(rectTransPoint, Quaternion.identity);
+		//rectTransform.SetLocalPositionAndRotation(rectTransPoint, Quaternion.identity);
 
 		//rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 100);
 		//rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 200);
