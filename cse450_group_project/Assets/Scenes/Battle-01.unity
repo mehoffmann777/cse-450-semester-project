@@ -1425,6 +1425,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 147710403}
   m_CullTransparentMesh: 1
+--- !u!114 &256706598 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1038257310367240412, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+  m_PrefabInstance: {fileID: 1040584245}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &344197731
 GameObject:
   m_ObjectHideFlags: 0
@@ -1436,6 +1447,7 @@ GameObject:
   - component: {fileID: 344197732}
   - component: {fileID: 344197734}
   - component: {fileID: 344197733}
+  - component: {fileID: 344197735}
   m_Layer: 5
   m_Name: CharacterStatMenu
   m_TagString: Untagged
@@ -1501,6 +1513,26 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 344197731}
   m_CullTransparentMesh: 1
+--- !u!114 &344197735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 344197731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 933475ad1fdda4897a7f9dbac1fbb08c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menu: {fileID: 344197731}
+  nameBadge: {fileID: 751022068}
+  hpValueDisplay: {fileID: 717645137}
+  strValueDisplay: {fileID: 256706598}
+  defValueDisplay: {fileID: 1910870755}
+  luckValueDisplay: {fileID: 811615084}
+  speedValueDisplay: {fileID: 1347961336}
+  movValueDisplay: {fileID: 1949228220}
 --- !u!1 &378336660
 GameObject:
   m_ObjectHideFlags: 0
@@ -1739,6 +1771,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StatBadge_MOV
       objectReference: {fileID: 0}
+    - target: {fileID: 7984473099988651674, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+      propertyPath: m_Name
+      value: StatValue_MOV
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1824,6 +1860,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 504025619}
   m_CullTransparentMesh: 1
+--- !u!114 &717645137 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1038257310367240412, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+  m_PrefabInstance: {fileID: 3434932358806360231}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &751022066
 GameObject:
   m_ObjectHideFlags: 0
@@ -2478,7 +2525,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3616888888498093389, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
       propertyPath: m_Name
-      value: StatBadge_LUC
+      value: StatBadge_LCK
+      objectReference: {fileID: 0}
+    - target: {fileID: 7984473099988651674, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+      propertyPath: m_Name
+      value: StatValue_LCK
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2490,6 +2541,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1982843114935034481, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
   m_PrefabInstance: {fileID: 811615082}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &811615084 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1038257310367240412, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+  m_PrefabInstance: {fileID: 811615082}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &886586624
 GameObject:
   m_ObjectHideFlags: 0
@@ -2908,6 +2970,10 @@ PrefabInstance:
     - target: {fileID: 3616888888498093389, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
       propertyPath: m_Name
       value: StatBadge_STR
+      objectReference: {fileID: 0}
+    - target: {fileID: 7984473099988651674, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+      propertyPath: m_Name
+      value: StatValue_STR
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4948,7 +5014,7 @@ GameObject:
   - component: {fileID: 1075344128}
   - component: {fileID: 1075344129}
   m_Layer: 0
-  m_Name: Mouse
+  m_Name: BattleManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4983,6 +5049,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turnUI: {fileID: 1920211805}
   statMenu: {fileID: 1472748280}
+  statMenuManager: {fileID: 344197735}
   resultMenu: {fileID: 758425374}
   movementMenu: {fileID: 147710403}
   mainCamera: {fileID: 770763673}
@@ -5699,6 +5766,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StatBadge_SPD
       objectReference: {fileID: 0}
+    - target: {fileID: 7984473099988651674, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+      propertyPath: m_Name
+      value: StatValue_SPD
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5709,6 +5780,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1982843114935034481, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
   m_PrefabInstance: {fileID: 1347961334}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1347961336 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1038257310367240412, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+  m_PrefabInstance: {fileID: 1347961334}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1352402219
 GameObject:
   m_ObjectHideFlags: 0
@@ -13512,6 +13594,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: StatBadge_DEF
       objectReference: {fileID: 0}
+    - target: {fileID: 7984473099988651674, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+      propertyPath: m_Name
+      value: StatValue_DEF
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -13522,6 +13608,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1982843114935034481, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
   m_PrefabInstance: {fileID: 1910870753}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1910870755 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1038257310367240412, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+  m_PrefabInstance: {fileID: 1910870753}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1920211803
 GameObject:
   m_ObjectHideFlags: 0
@@ -13656,6 +13753,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1920211803}
   m_CullTransparentMesh: 1
+--- !u!114 &1949228220 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1038257310367240412, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+  m_PrefabInstance: {fileID: 467308246}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2001702958
 GameObject:
   m_ObjectHideFlags: 0
@@ -13936,6 +14044,10 @@ PrefabInstance:
     - target: {fileID: 3616888888498093389, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
       propertyPath: m_Name
       value: StatBadge_HP
+      objectReference: {fileID: 0}
+    - target: {fileID: 7984473099988651674, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
+      propertyPath: m_Name
+      value: StatValue_HP
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

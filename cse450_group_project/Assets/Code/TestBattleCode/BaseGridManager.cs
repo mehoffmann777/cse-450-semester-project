@@ -21,6 +21,7 @@ public abstract class BaseGridManager : MonoBehaviour
 	public TMP_Text turnUI;
 	public GameObject statMenu;
 	private TextMeshProUGUI statText;
+	public StatMenuManager statMenuManager;
 	public GameObject resultMenu;
 	public GameObject movementMenu;
 	private Button attackButton;
@@ -81,6 +82,8 @@ public abstract class BaseGridManager : MonoBehaviour
 		combatManager = combatCamera.GetComponent<CombatManager>();
 		combatManager.combatOver = CombatOver;
 		combatManager.characterDead = CharacterDead;
+
+		statMenuManager.Hide();
 
 		battleState = BattleState.PlayerTurn;
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
@@ -243,6 +246,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 			yield return new WaitForSecondsRealtime(0.4f);
 
+			statMenuManager.UpdateForCharacterStats(movementData.selectedCharacterStats);
 			HandleCharacterSelectBFS();
 
 			yield return new WaitForSecondsRealtime(0.4f);
@@ -257,6 +261,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 				int distance = (int) MovementUtils.ManhattanDistance(attackingTile.LocalPlace, movementData.potentialTile.LocalPlace);
 
+				statMenuManager.Hide();
 				//combatManager.StartCombat(attackingTile.Character, movementData.selectedCharacter);
 				combatManager.StartCombat(movementData.selectedCharacter, attackingTile.Character, distance);
 			}
@@ -331,22 +336,70 @@ public abstract class BaseGridManager : MonoBehaviour
 	public void MouseOverStats(CharacterStats stats)
     {
 
-		statText.text = "HP: " + stats.health
+		if (statMenuManager)
+        {
+			statMenuManager.UpdateForCharacterStats(stats);
+
+			if (!stats.inCombat)
+			{
+				statMenuManager.Show();
+			}
+		}
+		else
+        {
+			statText.text = "HP: " + stats.health
 						+ "\nStr: " + stats.strength
 						+ "\nDef: " + stats.defense
 						+ "\nMov: " + stats.movement;
 
-		if (!stats.inCombat)
-		{
-			statMenu.SetActive(true);
+			if (!stats.inCombat)
+			{
+				statMenu.SetActive(true);
+			}
 		}
 
 	}
 
 	public void MouseLeaveStatCharacter()
     {
-		statMenu.SetActive(false);
+
+		if (statMenuManager)
+		{
+
+			if (characterMovementState == CharacterMovementState.NoCharacterSelected)
+			{
+				statMenuManager.Hide();
+				return;
+			}
+
+
+			// Any time a character is selected, this should exist. However, mouse over is scary
+			// There is room for error, so we check
+			if (movementData.selectedCharacterStats)
+            {
+				statMenuManager.UpdateForCharacterStats(movementData.selectedCharacterStats);
+            }
+			else
+            {
+				statMenuManager.Hide();
+            }
+
+		}
+		else {
+			statMenu.SetActive(false);
+		}
+
     }
+
+	private void DisplayStats()
+	{
+		if (movementData.selectedCharacterStats)
+		{
+			statMenuManager.UpdateForCharacterStats(movementData.selectedCharacterStats);
+			statMenuManager.Show();
+		}
+	}
+
 
 
 	private void MoveMenuTo(Vector3 point)
@@ -420,9 +473,11 @@ public abstract class BaseGridManager : MonoBehaviour
 		MoveCharacterBackTo(movementData.currentTile.WorldLocation);
 
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
+
 		movementData.Reset();
 		movementMenu.SetActive(false);
 
+		statMenuManager.Hide();
 		HandleCharacterDeselectBFS();
 	}
 
@@ -434,6 +489,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		movementData.Reset();
 		movementMenu.SetActive(false);
 
+		statMenuManager.Hide();
 		HandleCharacterDeselectBFS();
 	}
 
@@ -471,6 +527,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 					characterMovementState = CharacterMovementState.CharacterSelected;
 
+					DisplayStats();
 					HandleCharacterSelectBFS();
 				}
 				break;
@@ -492,6 +549,7 @@ public abstract class BaseGridManager : MonoBehaviour
 				else
 				{
 					characterMovementState = CharacterMovementState.NoCharacterSelected;
+					statMenuManager.Hide();
 					movementData.Reset();
 
 					HandleCharacterDeselectBFS();
@@ -513,6 +571,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 				int distance = (int) MovementUtils.ManhattanDistance(clickedTile.LocalPlace, movementData.potentialTile.LocalPlace);
 
+				statMenuManager.Hide();
 				combatManager.StartCombat(movementData.selectedCharacter, clickedTile.Character, distance);
 
 				break;
