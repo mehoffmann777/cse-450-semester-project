@@ -83,14 +83,20 @@ public abstract class BaseGridManager : MonoBehaviour
 		combatManager.combatOver = CombatOver;
 		combatManager.characterDead = CharacterDead;
 
-		statMenuManager.Hide();
 
 		battleState = BattleState.PlayerTurn;
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
 		movementData = new CharacterMovementData();
 
-		statText = statMenu.GetComponent<TextMeshProUGUI>();
-		var rectTransform = statMenu.GetComponent<RectTransform>();
+		if (statMenuManager)
+        {
+			statMenuManager.Hide();
+		}
+		else
+        {
+			statText = statMenu.GetComponent<TextMeshProUGUI>();
+			var rectTransform = statMenu.GetComponent<RectTransform>();
+        }
 
 		var screenPoint = Camera.main.WorldToScreenPoint(new Vector3(-3, 3, 0));
 		var screenRect = Camera.main.pixelRect;

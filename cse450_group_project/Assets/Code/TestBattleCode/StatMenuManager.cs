@@ -16,6 +16,8 @@ public class StatMenuManager : MonoBehaviour
     public TMPro.TextMeshProUGUI luckValueDisplay;
     public TMPro.TextMeshProUGUI speedValueDisplay;
     public TMPro.TextMeshProUGUI movValueDisplay;
+    public TMPro.TextMeshProUGUI rangeValueDisplay;
+
 
     public void UpdateForCharacterStats(CharacterStats stats)
     {
@@ -27,6 +29,14 @@ public class StatMenuManager : MonoBehaviour
         speedValueDisplay.text = "0";
         movValueDisplay.text = stats.movement.ToString();
 
+        if (stats.minRangeInclusive == stats.maxRangeInclusive)
+        {
+            rangeValueDisplay.text = stats.minRangeInclusive.ToString();
+        }
+        else
+        {
+            rangeValueDisplay.text = stats.minRangeInclusive + "-" + stats.maxRangeInclusive;
+        }
     }
 
     public void Hide() {
