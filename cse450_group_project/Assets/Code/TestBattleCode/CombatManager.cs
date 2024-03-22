@@ -81,8 +81,7 @@ public class CombatManager : MonoBehaviour
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
 
-        allyStats.inCombat = true;
-        enemyStats.inCombat = true;
+        
 
         enemySprite = enemy.GetComponent<SpriteRenderer>();
         allySprite = ally.GetComponent<SpriteRenderer>();
@@ -97,6 +96,9 @@ public class CombatManager : MonoBehaviour
         ally.transform.position = new Vector2(25, 0);
         enemy.transform.position = new Vector2(30, 0);
 
+        allyStats.inCombat = true;
+        enemyStats.inCombat = true;
+
         // coroutine is so I can use wait in attack, otherwise it cuts back
         // to the grid before you can watch the combat
         StartCoroutine(Attack(ally, enemy, originalAllyPos, originalEnemyPos, manhattanDistanceApart));
@@ -107,9 +109,12 @@ public class CombatManager : MonoBehaviour
     public IEnumerator Attack(GameObject ally, GameObject enemy, Vector3 originalAllyPos, Vector3 originalEnemyPos, int manhattanDistanceApart)
     {
 
+        
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
 
+        allyStats.inCombat = true;
+        enemyStats.inCombat = true;
         Color atttackerTextColor = allyStats.Team == CharacterTeam.Ally ? Color.white : Color.red;
         Color defenderTextColor = enemyStats.Team == CharacterTeam.Ally ? Color.white : Color.red;
 
