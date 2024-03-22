@@ -106,7 +106,7 @@ MonoBehaviour:
   accuracy: 9
   defense: 2
   luck: 8
-  movement: 4
+  movement: 5
   minRangeInclusive: 2
   maxRangeInclusive: 4
   CanMove: 1

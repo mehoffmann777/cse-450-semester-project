@@ -31,6 +31,8 @@ public class CombatManager : MonoBehaviour
     public struct PredictCombatResults {
         public float AttackerHitChance; 
         public float DefenderHitChance;
+        public float AttackerCritChance;
+        public float DefenderCritChance;
         public int AttackerHealth;
         public int DefenderHealth;
         public int AttackerDamageIfHit;
@@ -52,6 +54,9 @@ public class CombatManager : MonoBehaviour
         // dodge is just rolled as a set 0-10 on attack rn, but this could be changed 
         results.AttackerHitChance = attackerStats.accuracy / 10.0f;
         results.DefenderHitChance = defenderStats.accuracy / 10.0f;
+
+        results.AttackerCritChance = attackerStats.luck / 100.0f;
+        results.DefenderCritChance = defenderStats.luck/ 100.0f;
 
         results.AttackerHealth = attackerStats.health - results.DefenderDamageIfHit;
         results.DefenderHealth = defenderStats.health - results.AttackerDamageIfHit;
@@ -129,7 +134,7 @@ public class CombatManager : MonoBehaviour
 
         yield return new WaitForSecondsRealtime(3f);
 
-        bool defenderCanCounterAttack = enemyStats.minRangeInclusive <= manhattanDistanceApart && enemyStats.maxRangeInclusive >= manhattanDistanceApart;
+        bool defenderCanCounterAttack = DefenderCanCoutner(enemyStats, manhattanDistanceApart);
 
         if (enemyStats.health > 0 && defenderCanCounterAttack)
         {
@@ -181,6 +186,11 @@ public class CombatManager : MonoBehaviour
         turnUI.enabled = true;
 
         combatOver();
+    }
+
+    public static bool DefenderCanCoutner(CharacterStats defender, int distanceApart)
+    {
+        return defender.minRangeInclusive <= distanceApart && defender.maxRangeInclusive >= distanceApart;
     }
 
 }

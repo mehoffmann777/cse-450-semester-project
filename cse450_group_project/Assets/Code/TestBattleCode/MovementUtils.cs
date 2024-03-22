@@ -42,17 +42,7 @@ public class MovementUtils
 
 	public static List<BattlefieldTile> MovementDictionaryToValidList(Dictionary<BattlefieldTile, BattlefieldMovementTileTag> dictionary)
     {
-		List<BattlefieldTile> tileList = new();
-
-		foreach(KeyValuePair<BattlefieldTile, BattlefieldMovementTileTag> pair in dictionary)
-        {
-			if (pair.Value == BattlefieldMovementTileTag.Reachable)
-            {
-				tileList.Add(pair.Key);
-            }
-        }
-
-		return tileList;
+		return MovementDictToListWithTag(dictionary, BattlefieldMovementTileTag.Reachable);
     }
 
 	public static List<BattlefieldTile> MovementDictToListWithTag(Dictionary<BattlefieldTile, BattlefieldMovementTileTag> dictionary, BattlefieldMovementTileTag validTag)

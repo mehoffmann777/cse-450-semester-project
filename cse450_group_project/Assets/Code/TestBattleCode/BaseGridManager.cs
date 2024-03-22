@@ -21,7 +21,7 @@ public abstract class BaseGridManager : MonoBehaviour
 	public TMP_Text turnUI;
 	public GameObject statMenu;
 	private TextMeshProUGUI statText;
-	public StatMenuManager statMenuManager;
+	public CornerDisplay cornerDisplay;
 	public GameObject resultMenu;
 	public GameObject movementMenu;
 	private Button attackButton;
@@ -88,11 +88,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
 		movementData = new CharacterMovementData();
 
-		if (statMenuManager)
-        {
-			statMenuManager.Hide();
-		}
-		else
+		if (!cornerDisplay)
         {
 			statText = statMenu.GetComponent<TextMeshProUGUI>();
 			var rectTransform = statMenu.GetComponent<RectTransform>();
@@ -252,7 +248,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 			yield return new WaitForSecondsRealtime(0.4f);
 
-			statMenuManager.UpdateForCharacterStats(movementData.selectedCharacterStats);
+			cornerDisplay.ShowCharacterStats(movementData.selectedCharacterStats);
 			HandleCharacterSelectBFS();
 
 			yield return new WaitForSecondsRealtime(0.4f);
@@ -267,7 +263,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 				int distance = (int) MovementUtils.ManhattanDistance(attackingTile.LocalPlace, movementData.potentialTile.LocalPlace);
 
-				statMenuManager.Hide();
+				cornerDisplay.HideMenu();
 				//combatManager.StartCombat(attackingTile.Character, movementData.selectedCharacter);
 				combatManager.StartCombat(movementData.selectedCharacter, attackingTile.Character, distance);
 			}
@@ -341,15 +337,32 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	public void MouseOverStats(CharacterStats stats)
     {
+		if (stats.inCombat) { return; }
 
-		if (statMenuManager)
+		if (cornerDisplay)
         {
-			statMenuManager.UpdateForCharacterStats(stats);
+			if (battleState == BattleState.PlayerTurn && characterMovementState == CharacterMovementState.Attacking)
+            {
 
-			if (!stats.inCombat)
-			{
-				statMenuManager.Show();
-			}
+				if (stats == movementData.selectedCharacterStats) { return; }
+				if (stats.Team == CharacterTeam.Ally) { cornerDisplay.ShowCharacterStats(stats); return; }
+
+				// Is the character attackable?
+				List<BattlefieldTile> attackableList = MovementUtils.MovementDictToListWithTag(movementLocations, BattlefieldMovementTileTag.Attackable);
+
+				foreach (BattlefieldTile tile in attackableList)
+                {
+					if (tile.Character && tile.Character.GetComponent<CharacterStats>() == stats)
+                    {
+						int manhattDist = (int) MovementUtils.ManhattanDistance(movementData.potentialTile.LocalPlace, tile.LocalPlace);
+						cornerDisplay.ShowPreCombatWithCharacter(movementData.selectedCharacterStats, stats, manhattDist);
+						return;
+                    }
+                }
+            }
+
+			cornerDisplay.ShowCharacterStats(stats);
+			
 		}
 		else
         {
@@ -358,10 +371,8 @@ public abstract class BaseGridManager : MonoBehaviour
 						+ "\nDef: " + stats.defense
 						+ "\nMov: " + stats.movement;
 
-			if (!stats.inCombat)
-			{
-				statMenu.SetActive(true);
-			}
+			statMenu.SetActive(true);
+			
 		}
 
 	}
@@ -369,12 +380,12 @@ public abstract class BaseGridManager : MonoBehaviour
 	public void MouseLeaveStatCharacter()
     {
 
-		if (statMenuManager)
+		if (cornerDisplay)
 		{
 
 			if (characterMovementState == CharacterMovementState.NoCharacterSelected)
 			{
-				statMenuManager.Hide();
+				cornerDisplay.HideMenu();
 				return;
 			}
 
@@ -383,11 +394,11 @@ public abstract class BaseGridManager : MonoBehaviour
 			// There is room for error, so we check
 			if (movementData.selectedCharacterStats)
             {
-				statMenuManager.UpdateForCharacterStats(movementData.selectedCharacterStats);
+				cornerDisplay.ShowCharacterStats(movementData.selectedCharacterStats);
             }
 			else
             {
-				statMenuManager.Hide();
+				cornerDisplay.HideMenu();
             }
 
 		}
@@ -401,8 +412,7 @@ public abstract class BaseGridManager : MonoBehaviour
 	{
 		if (movementData.selectedCharacterStats)
 		{
-			statMenuManager.UpdateForCharacterStats(movementData.selectedCharacterStats);
-			statMenuManager.Show();
+			cornerDisplay.ShowCharacterStats(movementData.selectedCharacterStats);
 		}
 	}
 
@@ -484,7 +494,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		movementData.Reset();
 		movementMenu.SetActive(false);
 
-		statMenuManager.Hide();
+		cornerDisplay.HideMenu();
 		HandleCharacterDeselectBFS();
 	}
 
@@ -496,7 +506,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		movementData.Reset();
 		movementMenu.SetActive(false);
 
-		statMenuManager.Hide();
+		cornerDisplay.HideMenu();
 		HandleCharacterDeselectBFS();
 	}
 
@@ -556,7 +566,7 @@ public abstract class BaseGridManager : MonoBehaviour
 				else
 				{
 					characterMovementState = CharacterMovementState.NoCharacterSelected;
-					statMenuManager.Hide();
+					cornerDisplay.HideMenu();
 					movementData.Reset();
 
 					HandleCharacterDeselectBFS();
@@ -578,7 +588,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 				int distance = (int) MovementUtils.ManhattanDistance(clickedTile.LocalPlace, movementData.potentialTile.LocalPlace);
 
-				statMenuManager.Hide();
+				cornerDisplay.HideMenu();
 				combatManager.StartCombat(movementData.selectedCharacter, clickedTile.Character, distance);
 
 				break;
