@@ -35,5 +35,6 @@ public class CharacterStats : MonoBehaviour
     public GetMovementDecision getMovementDecision;
 
     public bool inCombat = false;
+    public bool clicked = false;
 
 }

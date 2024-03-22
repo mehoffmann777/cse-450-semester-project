@@ -7,6 +7,7 @@ public class AnimationController : MonoBehaviour
 
     Animator animator;
     bool inCombat;
+    bool clicked;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +19,9 @@ public class AnimationController : MonoBehaviour
     void Update()
     {
         inCombat = GetComponent<CharacterStats>().inCombat;
+        clicked = GetComponent<CharacterStats>().clicked;
         print(inCombat);
         animator.SetBool("inCombat", inCombat);
+        animator.SetBool("clicked", clicked);
     }
 }

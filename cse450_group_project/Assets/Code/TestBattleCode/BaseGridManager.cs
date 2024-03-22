@@ -539,6 +539,8 @@ public abstract class BaseGridManager : MonoBehaviour
 				if (stats.Team == CharacterTeam.Ally && stats.CanMove)
 				{
 					movementData.selectedCharacter = clickedTile.Character;
+					// for animation
+					stats.clicked = true;
 					movementData.selectedCharacterStats = stats;
 					movementData.currentTile = clickedTile;
 
@@ -709,6 +711,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	private void HandleCharacterDeselectBFS()
 	{
+		
 		UnshadeTiles();
 		movementLocations.Clear();
 	}
