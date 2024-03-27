@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterName: Reina Range
   startingHealth: 10
   health: 10
   stamina: 7
@@ -112,6 +113,7 @@ MonoBehaviour:
   CanMove: 1
   Team: 0
   inCombat: 0
+  clicked: 0
 --- !u!114 &5668496726391297848
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -141,6 +141,7 @@ public abstract class BaseGridManager : MonoBehaviour
 	public struct CharacterSetupInfo
     {
 		public GameObject character;
+		public string characterName;
 		public int x;
 		public int y;
 		public GetMovementDecision decisionPattern;
@@ -148,6 +149,27 @@ public abstract class BaseGridManager : MonoBehaviour
 		public CharacterSetupInfo(GameObject character, int x, int y, GetMovementDecision decisionPattern)
 		{
 			this.character = character;
+
+			CharacterStats stats = character.GetComponent<CharacterStats>();
+
+			if (stats)
+            {
+				this.characterName = stats.characterName;
+            }
+			else
+            {
+				this.characterName = "Grunt";
+            }
+
+			this.x = x;
+			this.y = y;
+			this.decisionPattern = decisionPattern;
+		}
+
+		public CharacterSetupInfo(GameObject character, string characterName, int x, int y, GetMovementDecision decisionPattern)
+		{
+			this.character = character;
+			this.characterName = characterName;
 			this.x = x;
 			this.y = y;
 			this.decisionPattern = decisionPattern;
@@ -163,12 +185,12 @@ public abstract class BaseGridManager : MonoBehaviour
     {
 		foreach (CharacterSetupInfo info in GetEnemySetupPattern())
         {
-			enemyCharacters.Add(PlaceCharacterAt(info.character, info.x, info.y, info.decisionPattern));
+			enemyCharacters.Add(PlaceCharacterAt(info));
         }
 
 		foreach (CharacterSetupInfo info in GetAllySetupPattern())
 		{
-			allyCharacters.Add(PlaceCharacterAt(info.character, info.x, info.y, info.decisionPattern));
+			allyCharacters.Add(PlaceCharacterAt(info));
 		}
 	}
 
@@ -754,8 +776,13 @@ public abstract class BaseGridManager : MonoBehaviour
 		movementLocations.Clear();
 	}
 
-	private GameObject PlaceCharacterAt(GameObject gameObject, int x, int y, GetMovementDecision movementDecision)
+	private GameObject PlaceCharacterAt(CharacterSetupInfo info)
 	{
+		GameObject gameObject = info.character;
+		int x = info.x;
+		int y = info.y;
+		GetMovementDecision movementDecision = info.decisionPattern;
+
 
 		Vector3 spawnLocation = new Vector3(x + 0.5f, y + 0.5f, -1);
 		Vector3Int tileLocation = new Vector3Int(x, y, 0);
@@ -764,6 +791,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 		GameObject spawn = Instantiate(gameObject, spawnLocation, Quaternion.identity);
 		CharacterStats spawnStats = spawn.GetComponent<CharacterStats>();
+		spawnStats.characterName = info.characterName;
 		spawnStats.getMovementDecision = movementDecision;
 
 		StatsMenuMouseOver statMenu = spawn.GetComponent<StatsMenuMouseOver>();

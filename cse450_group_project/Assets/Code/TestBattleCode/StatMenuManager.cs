@@ -21,6 +21,7 @@ public class StatMenuManager : MonoBehaviour
 
     public void UpdateForCharacterStats(CharacterStats stats)
     {
+        nameBadge.text = stats.characterName;
         hpValueDisplay.text = stats.health + " / " + stats.startingHealth;
 
         strValueDisplay.text = stats.strength.ToString();
