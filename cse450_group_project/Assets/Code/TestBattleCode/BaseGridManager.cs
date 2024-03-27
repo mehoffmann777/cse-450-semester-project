@@ -235,6 +235,12 @@ public abstract class BaseGridManager : MonoBehaviour
 
 			if (!characterStats.CanMove) { continue; }
 
+			// trigger movement animation
+			if (characterStats.Team == CharacterTeam.Enemy)
+			{
+				characterStats.clicked = true;
+			}
+
 			movementData.currentTile = tile;
 			movementData.selectedCharacter = character;
 			movementData.selectedCharacterStats = characterStats;
@@ -272,6 +278,7 @@ public abstract class BaseGridManager : MonoBehaviour
 				WaitMovement();
             }
 
+			characterStats.clicked = false;
 			// After first character moved, we are done. This function must be called multiple times
 			break;
 		}
