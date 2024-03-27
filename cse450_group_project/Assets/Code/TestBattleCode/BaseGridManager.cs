@@ -635,6 +635,7 @@ public abstract class BaseGridManager : MonoBehaviour
     {
 		movementData.selectedCharacter.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
 		movementData.selectedCharacterStats.CanMove = false;
+		movementData.selectedCharacterStats.clicked = false;
 	}
 
 	public void CharacterDead(GameObject deadCharacter)
@@ -711,9 +712,9 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	private void HandleCharacterDeselectBFS()
 	{
-		
 		UnshadeTiles();
 		movementLocations.Clear();
+	
 	}
 
 	private GameObject PlaceCharacterAt(GameObject gameObject, int x, int y, GetMovementDecision movementDecision)
