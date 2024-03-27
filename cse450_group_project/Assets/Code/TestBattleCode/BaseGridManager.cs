@@ -490,9 +490,11 @@ public abstract class BaseGridManager : MonoBehaviour
 		MoveCharacterBackTo(movementData.currentTile.WorldLocation);
 
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
-
+		movementData.selectedCharacterStats.clicked = false;
 		movementData.Reset();
 		movementMenu.SetActive(false);
+
+		
 
 		cornerDisplay.HideMenu();
 		HandleCharacterDeselectBFS();
