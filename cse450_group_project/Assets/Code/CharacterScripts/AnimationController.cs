@@ -20,7 +20,7 @@ public class AnimationController : MonoBehaviour
     {
         inCombat = GetComponent<CharacterStats>().inCombat;
         clicked = GetComponent<CharacterStats>().clicked;
-        print(inCombat);
+      //  print(inCombat);
         animator.SetBool("inCombat", inCombat);
         animator.SetBool("clicked", clicked);
     }
