@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5286612575269743012}
   - component: {fileID: 2705167468203348622}
   - component: {fileID: 2359879255434319428}
+  - component: {fileID: 3467061516213546417}
   m_Layer: 0
   m_Name: EnemyInfantry
   m_TagString: Untagged
@@ -113,6 +114,7 @@ MonoBehaviour:
   CanMove: 1
   Team: 1
   inCombat: 0
+  clicked: 0
 --- !u!114 &5286612575269743012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,3 +193,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3467061516213546417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744878082758574427}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77ed912d50bde4caf981ede76b30d987, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
