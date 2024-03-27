@@ -133,6 +133,11 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	}
 
+	public int getTurnCount()
+    {
+		return turnCount;
+    }
+
 	public struct CharacterSetupInfo
     {
 		public GameObject character;
@@ -169,6 +174,8 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	private void Update()
 	{
+		CheckWinLossConditions();
+
 		if (battleState == BattleState.Won && !resultMenu.activeSelf)
         {
 			resultMenu.GetComponentInChildren<TextMeshProUGUI>().text = "You Won!";
@@ -216,6 +223,35 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	}
 
+	private void CheckWinLossConditions()
+    {
+		if (battleState == BattleState.Won || battleState == BattleState.Lost)
+        {
+			return;
+        }
+
+
+		// Defeating last enemy while player dies in process should be a loss.
+		// Eval loss first
+		if (BattleIsLost())
+        {
+			battleState = BattleState.Lost;
+        }
+		else if (BattleIsWon())
+		{
+			battleState = BattleState.Won;
+		}
+
+	}
+
+	public virtual bool BattleIsLost() {
+		return allyCharacters.Count == 0;
+	}
+
+	public virtual bool BattleIsWon()
+    {
+		return enemyCharacters.Count == 0;
+	}
 
 	// Moves one enemy 
 	private IEnumerator TakeEnemyTurn()
@@ -653,16 +689,18 @@ public abstract class BaseGridManager : MonoBehaviour
 		allyCharacters.Remove(deadCharacter);
 		enemyCharacters.Remove(deadCharacter);
 
-		if (allyCharacters.Count == 0)
+		/*
+        if (allyCharacters.Count == 0)
         {
-			battleState = BattleState.Lost;
+            battleState = BattleState.Lost;
         }
-		else if (enemyCharacters.Count == 0)
-		{
-			battleState = BattleState.Won;
-		}
+        else if (enemyCharacters.Count == 0)
+        {
+            battleState = BattleState.Won;
+        }
+		*/
 
-		deadCharacter.SetActive(false);
+        deadCharacter.SetActive(false);
 	}
 
 	private void HandleCharacterSelectBFS() {
