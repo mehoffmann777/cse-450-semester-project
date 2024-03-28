@@ -108,7 +108,7 @@ MonoBehaviour:
   defense: 5
   dex: 4
   luck: 4
-  movement: 4
+  movement: 50
   minRangeInclusive: 1
   maxRangeInclusive: 1
   CanMove: 1

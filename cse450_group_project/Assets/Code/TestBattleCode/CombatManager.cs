@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-
+using UnityEngine.UI;
 
 
 public class CombatManager : MonoBehaviour
@@ -22,6 +22,9 @@ public class CombatManager : MonoBehaviour
     private Sprite enemyGridSprite;
     private Sprite enemyCombatSprite;
     private Sprite allyCombatSprite;
+
+    public Image allyHeart;
+    public Image enemyHeart;
 
     public int enemyDamage;
     public int enemyHitChance;
@@ -111,6 +114,9 @@ public class CombatManager : MonoBehaviour
         ally.transform.position = new Vector2(25, 0);
         enemy.transform.position = new Vector2(30, 0);
 
+        allyHeart.fillAmount = (float)allyStats.health / (float)allyStats.startingHealth;
+        enemyHeart.fillAmount = (float)enemyStats.health / (float)enemyStats.startingHealth;
+
         allyStats.inCombat = true;
         enemyStats.inCombat = true;
 
@@ -137,8 +143,6 @@ public class CombatManager : MonoBehaviour
 
         PredictCombatResults combatCalculations = PredictCombat(allyStats, enemyStats);
 
-        
-
         float attackerHitRoll = Random.Range(0f, 1f);
         float attackerCritRoll = Random.Range(0f, 1f);
 
@@ -148,7 +152,9 @@ public class CombatManager : MonoBehaviour
             bool crit = attackerCritRoll < combatCalculations.AttackerCritChance;
             int damage = combatCalculations.AttackerDamageIfHit * (crit ? 2 : 1);
             enemyStats.health -= damage;
+            enemyHeart.fillAmount = ((float)enemyStats.health / (float)enemyStats.startingHealth) + 0.2f;
             attackText.text = attackerName + (crit ? "Critical " : "") + "Hit " + damage;
+            
         }
         else
         {
@@ -170,6 +176,7 @@ public class CombatManager : MonoBehaviour
                 bool crit = defenderCritRoll < combatCalculations.DefenderCritChance;
                 int damage = combatCalculations.DefenderDamageIfHit * (crit ? 2 : 1);
                 allyStats.health -= damage;
+                allyHeart.fillAmount = ((float)allyStats.health / (float)allyStats.startingHealth) + 0.2f;
                 attackText.text = defenderName + (crit ? "Critical " : "") + "Hit " + damage;
             } else
             {
@@ -177,8 +184,6 @@ public class CombatManager : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(3f);
         }
-        //allyStats.CanMove = false;
-        //ally.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
 
         ally.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
         enemy.GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
