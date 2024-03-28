@@ -293,6 +293,12 @@ public abstract class BaseGridManager : MonoBehaviour
 
 			if (!characterStats.CanMove) { continue; }
 
+			// trigger movement animation
+			if (characterStats.Team == CharacterTeam.Enemy)
+			{
+				characterStats.clicked = true;
+			}
+
 			movementData.currentTile = tile;
 			movementData.selectedCharacter = character;
 			movementData.selectedCharacterStats = characterStats;
@@ -330,6 +336,7 @@ public abstract class BaseGridManager : MonoBehaviour
 				WaitMovement();
             }
 
+			characterStats.clicked = false;
 			// After first character moved, we are done. This function must be called multiple times
 			break;
 		}
@@ -548,9 +555,11 @@ public abstract class BaseGridManager : MonoBehaviour
 		MoveCharacterBackTo(movementData.currentTile.WorldLocation);
 
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
-
+		movementData.selectedCharacterStats.clicked = false;
 		movementData.Reset();
 		movementMenu.SetActive(false);
+
+		
 
 		cornerDisplay.HideMenu();
 		HandleCharacterDeselectBFS();
@@ -693,6 +702,7 @@ public abstract class BaseGridManager : MonoBehaviour
     {
 		movementData.selectedCharacter.GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
 		movementData.selectedCharacterStats.CanMove = false;
+		movementData.selectedCharacterStats.clicked = false;
 	}
 
 	public void CharacterDead(GameObject deadCharacter)
@@ -771,9 +781,9 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	private void HandleCharacterDeselectBFS()
 	{
-		
 		UnshadeTiles();
 		movementLocations.Clear();
+	
 	}
 
 	private GameObject PlaceCharacterAt(CharacterSetupInfo info)

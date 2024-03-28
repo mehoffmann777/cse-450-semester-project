@@ -11,6 +11,9 @@ public class mapShipMovement : MonoBehaviour
     public float rotation_speed;
     [SerializeField] private GameObject instructionsPanel;
 
+    private Graphic instructionsPanelGraphic;
+
+
     //state tracking
     private int idleTimer;
     public int idleTimerMax;
@@ -22,13 +25,16 @@ public class mapShipMovement : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
         idleTimer = 0;
+        instructionsPanelGraphic = instructionsPanel.GetComponent<Graphic>();
+       // instructionsPanelGraphic.CrossFadeAlpha(0, 0, false);
+
     }
 
     // Update is called once per frame
     void Update()
     {
 
-     
+
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             _rb.AddTorque(rotation_speed * Time.deltaTime);
@@ -38,12 +44,15 @@ public class mapShipMovement : MonoBehaviour
         else if (Input.GetKey(KeyCode.RightArrow))
         {
             _rb.AddTorque(-rotation_speed * Time.deltaTime);
+            idleTimer = 0;
+
         }
         //forward boost
         else if (Input.GetKey(KeyCode.Space))
         {
-            _rb.AddRelativeForce(new Vector2(0,-1) * speed * 10 * Time.deltaTime);
-            
+            _rb.AddRelativeForce(new Vector2(0, -1) * speed * 10 * Time.deltaTime);
+            idleTimer = 0;
+
         }
         else
         {
@@ -52,20 +61,16 @@ public class mapShipMovement : MonoBehaviour
 
         if (idleTimer > idleTimerMax)
         {
-            //we wanna make this a coroutine where we fade in the panel based on the alpha
-            //StartCoroutine("FadePanelIn");
-           instructionsPanel.SetActive(true); 
+           // instructionsPanelGraphic.CrossFadeAlpha(1, 1, false);
+            instructionsPanel.SetActive(true);
+
         }
         else
         {
-            //we wanna make this a coroutine where we fade out the panel based on the alpha
-            //StartCoroutine("FadePanelOut");
+            //instructionsPanelGraphic.CrossFadeAlpha(0, 1, false);
             instructionsPanel.SetActive(false);
         }
-
     }
-
-        
 
 
 }
