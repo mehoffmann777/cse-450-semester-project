@@ -104,12 +104,11 @@ MonoBehaviour:
   characterName: Ian Infantry
   startingHealth: 10
   health: 10
-  stamina: 7
   strength: 10
-  accuracy: 5
   defense: 5
-  luck: 7
-  movement: 20
+  dex: 4
+  luck: 4
+  movement: 4
   minRangeInclusive: 1
   maxRangeInclusive: 1
   CanMove: 1

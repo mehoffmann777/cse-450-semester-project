@@ -102,12 +102,11 @@ MonoBehaviour:
   characterName: Reina Range
   startingHealth: 10
   health: 10
-  stamina: 7
   strength: 8
-  accuracy: 9
   defense: 2
+  dex: 7
   luck: 8
-  movement: 5
+  movement: 6
   minRangeInclusive: 2
   maxRangeInclusive: 4
   CanMove: 1

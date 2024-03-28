@@ -19,10 +19,9 @@ public class CharacterStats : MonoBehaviour
     public string characterName = "Grunt";
     public int startingHealth;
     public int health;
-    public int stamina;
     public int strength;
-    public int accuracy;
     public int defense;
+    public int dex;
     public int luck;
     public int movement;
 

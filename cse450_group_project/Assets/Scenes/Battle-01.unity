@@ -5869,7 +5869,7 @@ MonoBehaviour:
   strValueDisplay: {fileID: 256706598}
   defValueDisplay: {fileID: 1910870755}
   luckValueDisplay: {fileID: 811615084}
-  speedValueDisplay: {fileID: 1347961336}
+  dexValueDisplay: {fileID: 1347961336}
   movValueDisplay: {fileID: 1949228220}
   rangeValueDisplay: {fileID: 562406347}
 --- !u!1 &1164993754
@@ -6281,7 +6281,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1432739970953488592, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
       propertyPath: m_text
-      value: SPD
+      value: DEX
       objectReference: {fileID: 0}
     - target: {fileID: 1982843114935034481, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
       propertyPath: m_Pivot.x
@@ -6365,11 +6365,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3616888888498093389, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
       propertyPath: m_Name
-      value: StatBadge_SPD
+      value: StatBadge_DEX
       objectReference: {fileID: 0}
     - target: {fileID: 7984473099988651674, guid: 2e6dee945d51644bc913d870d7176e21, type: 3}
       propertyPath: m_Name
-      value: StatValue_SPD
+      value: StatValue_DEX
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

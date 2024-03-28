@@ -52,11 +52,18 @@ public class CombatManager : MonoBehaviour
 
         // will rework stats to factor in both accuracy + opponent's something to determine dodge
         // dodge is just rolled as a set 0-10 on attack rn, but this could be changed 
-        results.AttackerHitChance = attackerStats.accuracy / 10.0f;
-        results.DefenderHitChance = defenderStats.accuracy / 10.0f;
 
-        results.AttackerCritChance = attackerStats.luck / 100.0f;
-        results.DefenderCritChance = defenderStats.luck/ 100.0f;
+        float attackerHitPremium = attackerStats.dex - defenderStats.dex + (0.25f * attackerStats.luck);
+        float defenderHitPremium = defenderStats.dex - attackerStats.dex + (0.25f * defenderStats.luck);
+
+        results.AttackerHitChance = StatToPercentCustomSigmoid(attackerHitPremium);
+        results.DefenderHitChance = StatToPercentCustomSigmoid(defenderHitPremium);
+
+        float attackerCritPremium = attackerStats.luck - defenderStats.luck + (0.25f * attackerStats.dex);
+        float defenderCritPremium = defenderStats.luck - attackerStats.luck + (0.25f * defenderStats.dex);
+
+        results.AttackerCritChance = StatToPercentCustomSigmoid(attackerCritPremium) * 0.05f;
+        results.DefenderCritChance = StatToPercentCustomSigmoid(defenderCritPremium) * 0.05f;
 
         results.AttackerHealth = attackerStats.health - results.DefenderDamageIfHit;
         results.DefenderHealth = defenderStats.health - results.AttackerDamageIfHit;
@@ -65,6 +72,16 @@ public class CombatManager : MonoBehaviour
         results.WouldKillDefender = results.DefenderHealth <= 0;
 
         return results;
+    }
+
+
+    // Be careful about changing - 0 is 90, 4 is 97, -4 is 74
+    private static float StatToPercentCustomSigmoid(float statVal)
+    {
+        const float minVal = 0.3f;
+        float valTransform =  (statVal + 5.5f) / 3f;
+        float increaseOverMin = ((1 - minVal) / (1.0f + Mathf.Exp(-valTransform)));
+        return minVal + increaseOverMin;
     }
 
     public void StartCombat(GameObject ally, GameObject enemy, int manhattanDistanceApart)
@@ -80,8 +97,6 @@ public class CombatManager : MonoBehaviour
 
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
-
-        
 
         enemySprite = enemy.GetComponent<SpriteRenderer>();
         allySprite = ally.GetComponent<SpriteRenderer>();
@@ -109,7 +124,6 @@ public class CombatManager : MonoBehaviour
     public IEnumerator Attack(GameObject ally, GameObject enemy, Vector3 originalAllyPos, Vector3 originalEnemyPos, int manhattanDistanceApart)
     {
 
-        
         CharacterStats allyStats = ally.GetComponent<CharacterStats>();
         CharacterStats enemyStats = enemy.GetComponent<CharacterStats>();
 
@@ -121,14 +135,18 @@ public class CombatManager : MonoBehaviour
         string attackerName = allyStats.Team == CharacterTeam.Ally ? "Player " : "Enemy ";
         string defenderName = enemyStats.Team == CharacterTeam.Ally ? "Player " : "Enemy ";
 
+        PredictCombatResults combatCalculations = PredictCombat(allyStats, enemyStats);
 
-        int enemyDodge = Random.Range(0, 10);
-        int criticalHit = Random.Range(0, 100);
+        
+
+        float attackerHitRoll = Random.Range(0f, 1f);
+        float attackerCritRoll = Random.Range(0f, 1f);
+
         attackText.color = atttackerTextColor;
-        if (allyStats.accuracy > enemyDodge)
+        if (attackerHitRoll < combatCalculations.AttackerHitChance)
         {
-            bool crit = allyStats.luck > criticalHit;
-            int damage = (allyStats.strength * (crit ? 2 : 1)) - enemyStats.defense;
+            bool crit = attackerCritRoll < combatCalculations.AttackerCritChance;
+            int damage = combatCalculations.AttackerDamageIfHit * (crit ? 2 : 1);
             enemyStats.health -= damage;
             attackText.text = attackerName + (crit ? "Critical " : "") + "Hit " + damage;
         }
@@ -143,16 +161,16 @@ public class CombatManager : MonoBehaviour
 
         if (enemyStats.health > 0 && defenderCanCounterAttack)
         {
-            int playerDodge = Random.Range(0, 10);
+            float defenderHitRoll = Random.Range(0f, 1f);
+            float defenderCritRoll = Random.Range(0f, 1f);
 
             attackText.color = defenderTextColor;
-            if (enemyStats.accuracy > playerDodge)
+            if (defenderHitRoll < combatCalculations.DefenderHitChance)
             {
-                criticalHit = Random.Range(0, 100);
-                bool encrit = enemyStats.luck > criticalHit;
-                int endamage = (enemyStats.strength * (encrit ? 2 : 1)) - allyStats.defense;
-                allyStats.health -= endamage;
-                attackText.text = defenderName + (encrit ? "Critical " : "") + "Hit " + endamage;
+                bool crit = defenderCritRoll < combatCalculations.DefenderCritChance;
+                int damage = combatCalculations.DefenderDamageIfHit * (crit ? 2 : 1);
+                allyStats.health -= damage;
+                attackText.text = defenderName + (crit ? "Critical " : "") + "Hit " + damage;
             } else
             {
                 attackText.text = defenderName + "Miss";

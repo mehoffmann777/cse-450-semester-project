@@ -99,19 +99,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterName: Grunt
   startingHealth: 10
   health: 10
-  stamina: 6
   strength: 7
-  accuracy: 8
   defense: 2
+  dex: 6
   luck: 8
-  movement: 4
+  movement: 5
   minRangeInclusive: 2
   maxRangeInclusive: 3
   CanMove: 1
   Team: 1
   inCombat: 0
+  clicked: 0
 --- !u!114 &5668496726391297848
 MonoBehaviour:
   m_ObjectHideFlags: 0

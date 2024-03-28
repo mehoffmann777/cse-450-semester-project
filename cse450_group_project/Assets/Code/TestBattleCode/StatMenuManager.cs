@@ -14,7 +14,7 @@ public class StatMenuManager : MonoBehaviour
     public TMPro.TextMeshProUGUI strValueDisplay;
     public TMPro.TextMeshProUGUI defValueDisplay;
     public TMPro.TextMeshProUGUI luckValueDisplay;
-    public TMPro.TextMeshProUGUI speedValueDisplay;
+    public TMPro.TextMeshProUGUI dexValueDisplay;
     public TMPro.TextMeshProUGUI movValueDisplay;
     public TMPro.TextMeshProUGUI rangeValueDisplay;
 
@@ -27,7 +27,7 @@ public class StatMenuManager : MonoBehaviour
         strValueDisplay.text = stats.strength.ToString();
         defValueDisplay.text = stats.defense.ToString();
         luckValueDisplay.text = stats.luck.ToString();
-        speedValueDisplay.text = "0";
+        dexValueDisplay.text = stats.dex.ToString();
         movValueDisplay.text = stats.movement.ToString();
 
         if (stats.minRangeInclusive == stats.maxRangeInclusive)
