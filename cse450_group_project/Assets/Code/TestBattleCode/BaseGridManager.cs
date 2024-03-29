@@ -34,7 +34,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	private int turnCount;
 
-	private enum BattleState {
+	public enum BattleState {
 		PlayerTurn,
 		EnemyTurn,
 		Won,
@@ -133,10 +133,20 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	}
 
+	public List<GameObject> GetAllyCharacters()
+    {
+		return allyCharacters;
+    }
+
 	public int getTurnCount()
     {
 		return turnCount;
     }
+
+	public BattleState GetBattleState()
+	{
+		return battleState;
+	}
 
 	public struct CharacterSetupInfo
     {
@@ -538,7 +548,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		}
 
 		if (battleState != BattleState.PlayerTurn) { return; }
-
+		
 		// check tile clicked
 		var worldPoint = new Vector3Int(Mathf.FloorToInt(point.x), Mathf.FloorToInt(point.y), 0);
 		var tiles = GridData.instance.tiles; // This is our Dictionary of tiles
@@ -720,17 +730,6 @@ public abstract class BaseGridManager : MonoBehaviour
 
 		allyCharacters.Remove(deadCharacter);
 		enemyCharacters.Remove(deadCharacter);
-
-		/*
-        if (allyCharacters.Count == 0)
-        {
-            battleState = BattleState.Lost;
-        }
-        else if (enemyCharacters.Count == 0)
-        {
-            battleState = BattleState.Won;
-        }
-		*/
 
         deadCharacter.SetActive(false);
 	}

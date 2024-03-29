@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 8125369170446004611}
   - component: {fileID: 6491350411696373240}
   - component: {fileID: -5087664322820577383}
-  - component: {fileID: 5668496726391297848}
-  - component: {fileID: -2832533676417534112}
-  - component: {fileID: 2157254014273433890}
-  - component: {fileID: 4897174568823912935}
+  - component: {fileID: 5286612575269743012}
+  - component: {fileID: 2705167468203348622}
+  - component: {fileID: 2359879255434319428}
+  - component: {fileID: 3467061516213546417}
   m_Layer: 0
-  m_Name: AllyInfantry
+  m_Name: EnemyInfantryWeakFast
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -943146839, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
+  m_Sprite: {fileID: 1656345257, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -101,21 +101,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterName: Ian Infantry
-  startingHealth: 10
-  health: 10
-  strength: 10
-  defense: 5
-  dex: 4
+  characterName: Grunt
+  startingHealth: 7
+  health: 7
+  strength: 7
+  defense: 1
+  dex: 6
   luck: 4
-  movement: 6
+  movement: 5
   minRangeInclusive: 1
   maxRangeInclusive: 1
   CanMove: 1
-  Team: 0
+  Team: 1
   inCombat: 0
   clicked: 0
---- !u!114 &5668496726391297848
+--- !u!114 &5286612575269743012
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -127,7 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f6bc1bb953241d3a98003d300ccf4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!61 &-2832533676417534112
+--- !u!61 &2705167468203348622
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,7 +172,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!95 &2157254014273433890
+--- !u!95 &2359879255434319428
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
@@ -182,7 +182,7 @@ Animator:
   m_GameObject: {fileID: 1744878082758574427}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ff82733d9146b4e69a96f1b22fbc1944, type: 2}
+  m_Controller: {fileID: 9100000, guid: 622695d4cc7774c599a772cf20c20ebe, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -193,7 +193,7 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4897174568823912935
+--- !u!114 &3467061516213546417
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

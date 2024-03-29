@@ -111,8 +111,9 @@ public class CombatManager : MonoBehaviour
         Vector3 originalAllyPos = ally.transform.position;
         Vector3 originalEnemyPos = enemy.transform.position;
 
-        ally.transform.position = new Vector2(25, 0);
-        enemy.transform.position = new Vector2(30, 0);
+
+        ally.transform.position = new Vector2(125, 0);
+        enemy.transform.position = new Vector2(130, 0);
 
         allyHeart.fillAmount = (float)allyStats.health / (float)allyStats.startingHealth;
         enemyHeart.fillAmount = (float)enemyStats.health / (float)enemyStats.startingHealth;
@@ -146,6 +147,9 @@ public class CombatManager : MonoBehaviour
         float attackerHitRoll = Random.Range(0f, 1f);
         float attackerCritRoll = Random.Range(0f, 1f);
 
+        attackText.text = "";
+        yield return new WaitForSecondsRealtime(0.75f);
+
         attackText.color = atttackerTextColor;
         if (attackerHitRoll < combatCalculations.AttackerHitChance)
         {
@@ -161,12 +165,14 @@ public class CombatManager : MonoBehaviour
             attackText.text = attackerName + "Miss";
         }
 
-        yield return new WaitForSecondsRealtime(3f);
+        yield return new WaitForSecondsRealtime(1f);
 
         bool defenderCanCounterAttack = DefenderCanCoutner(enemyStats, manhattanDistanceApart);
 
         if (enemyStats.health > 0 && defenderCanCounterAttack)
         {
+            yield return new WaitForSecondsRealtime(2f);
+
             float defenderHitRoll = Random.Range(0f, 1f);
             float defenderCritRoll = Random.Range(0f, 1f);
 

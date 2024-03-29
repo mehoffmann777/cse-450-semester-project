@@ -13,10 +13,8 @@ GameObject:
   - component: {fileID: -5087664322820577383}
   - component: {fileID: 5668496726391297848}
   - component: {fileID: -2832533676417534112}
-  - component: {fileID: 2157254014273433890}
-  - component: {fileID: 4897174568823912935}
   m_Layer: 0
-  m_Name: AllyInfantry
+  m_Name: EnemyRangeWeak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,8 +76,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -943146839, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: -857012763, guid: 59fa7517f3c414962a34f47d5f4b11dd, type: 3}
+  m_Color: {r: 0.7686275, g: 0.7686275, b: 0.7686275, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -101,18 +99,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterName: Ian Infantry
-  startingHealth: 10
-  health: 10
-  strength: 10
-  defense: 5
-  dex: 4
-  luck: 4
+  characterName: Grunt
+  startingHealth: 5
+  health: 5
+  strength: 7
+  defense: 2
+  dex: 7
+  luck: 5
   movement: 6
-  minRangeInclusive: 1
-  maxRangeInclusive: 1
+  minRangeInclusive: 2
+  maxRangeInclusive: 3
   CanMove: 1
-  Team: 0
+  Team: 1
   inCombat: 0
   clicked: 0
 --- !u!114 &5668496726391297848
@@ -172,36 +170,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!95 &2157254014273433890
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744878082758574427}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ff82733d9146b4e69a96f1b22fbc1944, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &4897174568823912935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1744878082758574427}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77ed912d50bde4caf981ede76b30d987, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
