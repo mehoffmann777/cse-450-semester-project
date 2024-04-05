@@ -21,6 +21,11 @@ public class BattleSetup02 : BaseGridManager
 
     private int turnWonChecked = 0;
 
+    public override string InstructionsText()
+    {
+        return "There are too many enemies here! Escape to your ships at the top of the map.\nWin by ending your turn with all allies by your ships. You lose if all your allies fall in battle.";
+    }
+
     public override bool BattleIsWon()
     {
         BattleState battleState = GetBattleState();

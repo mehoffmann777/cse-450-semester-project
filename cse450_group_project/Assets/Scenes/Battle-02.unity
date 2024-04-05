@@ -16572,11 +16572,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ae6adc2674bc47e58f1f1b648693980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &758425374 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4204225088271382088, guid: 22fbea986655547cc9dcab7eadb74675, type: 3}
+--- !u!114 &758425378 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6110710360779745100, guid: 22fbea986655547cc9dcab7eadb74675, type: 3}
   m_PrefabInstance: {fileID: 1726986064855537109}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d95f3f7dc24014bf3b6cf982a9499a7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &770763671
 GameObject:
   m_ObjectHideFlags: 0
@@ -18953,7 +18959,8 @@ MonoBehaviour:
   turnUI: {fileID: 1920211805}
   statMenu: {fileID: 0}
   cornerDisplay: {fileID: 344197735}
-  resultMenu: {fileID: 758425374}
+  resultMenuManager: {fileID: 758425378}
+  fullScreenMenuManager: {fileID: 1437600503}
   movementMenu: {fileID: 1720331609}
   mainCamera: {fileID: 770763673}
   mainCameraManager: {fileID: 0}
@@ -19009,6 +19016,17 @@ Transform:
   - {fileID: 1067488377}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1437600503 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5822755622568296690, guid: 22fbea986655547cc9dcab7eadb74675, type: 3}
+  m_PrefabInstance: {fileID: 1726986064855537109}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6039b9fc63d034a4a8f3a4c14d9837ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1720331609 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1772793829258781129, guid: 22fbea986655547cc9dcab7eadb74675, type: 3}

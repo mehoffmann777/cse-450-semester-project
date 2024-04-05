@@ -22,7 +22,8 @@ public abstract class BaseGridManager : MonoBehaviour
 	public GameObject statMenu;
 	private TextMeshProUGUI statText;
 	public CornerDisplay cornerDisplay;
-	public GameObject resultMenu;
+	public ResultMenuManager resultMenuManager;
+	public FullScreenMenuManager fullScreenMenuManager;
 	public GameObject movementMenu;
 	private Button attackButton;
 
@@ -79,7 +80,6 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	private void Start()
     {
-		resultMenu.SetActive(false);
 		combatCamera.enabled = false;
 		combatManager = combatCamera.GetComponent<CombatManager>();
 		combatManager.combatOver = CombatOver;
@@ -100,6 +100,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		var screenPoint = Camera.main.WorldToScreenPoint(new Vector3(-3, 3, 0));
 		var screenRect = Camera.main.pixelRect;
 
+		fullScreenMenuManager.SetWinLoseText(InstructionsText());
 
 		//var rectTransPoint = new Vector3(
 		//	screenPoint.x - screenRect.width / 4.0f,
@@ -108,7 +109,6 @@ public abstract class BaseGridManager : MonoBehaviour
 		//rectTransform.SetLocalPositionAndRotation(rectTransPoint, Quaternion.identity);
 
 		PlaceCharacters();
-
 
 		movementMenu.SetActive(false);
 		Button[] buttons = movementMenu.GetComponentsInChildren<Button>();
@@ -135,6 +135,12 @@ public abstract class BaseGridManager : MonoBehaviour
 		turnUI.text = "Turn " + turnCount.ToString();
 
 	}
+
+	public virtual string InstructionsText()
+	{
+		return "Win by defeating all enemy characters.\nYou lose if all your characters fall in battle.";
+	}
+
 
 	public List<GameObject> GetAllyCharacters()
     {
@@ -211,18 +217,24 @@ public abstract class BaseGridManager : MonoBehaviour
 	{
 		CheckWinLossConditions();
 
-		if (battleState == BattleState.Won && !resultMenu.activeSelf)
+		if (Input.GetKeyDown(KeyCode.Escape))
         {
-			resultMenu.GetComponentInChildren<TextMeshProUGUI>().text = "You Won!";
-			resultMenu.SetActive(true);
+			fullScreenMenuManager.Show();
         }
 
-		if (battleState == BattleState.Lost && !resultMenu.activeSelf)
-		{
-			resultMenu.GetComponentInChildren<TextMeshProUGUI>().text = "You Lost!";
-			resultMenu.SetActive(true);
+		if (battleState == BattleState.Won && !resultMenuManager.gameObject.activeSelf)
+        {
+			resultMenuManager.PlayerWon();
+
 		}
 
+		if (battleState == BattleState.Lost && !resultMenuManager.gameObject.activeSelf)
+		{
+			resultMenuManager.PlayerLost();
+		}
+
+		// Do not take interactions if the menu is up
+		if (fullScreenMenuManager.gameObject.activeSelf) { return; }
 
 		if (battleState == BattleState.PlayerTurn)
         {
