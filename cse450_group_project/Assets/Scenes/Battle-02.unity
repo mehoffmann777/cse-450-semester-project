@@ -18956,6 +18956,7 @@ MonoBehaviour:
   resultMenu: {fileID: 758425374}
   movementMenu: {fileID: 1720331609}
   mainCamera: {fileID: 770763673}
+  mainCameraManager: {fileID: 0}
   combatCamera: {fileID: 787826356}
   enemyInfantry: {fileID: 1744878082758574427, guid: 17329ff58138542c1ad24f3bb0f5bce1, type: 3}
   enemyInfantryWeakAndFast: {fileID: 1744878082758574427, guid: 4000aa7eb24494734aa2bc1786ff7d68, type: 3}

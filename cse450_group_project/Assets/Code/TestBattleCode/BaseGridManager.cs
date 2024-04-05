@@ -71,9 +71,11 @@ public abstract class BaseGridManager : MonoBehaviour
 	private CharacterMovementData movementData;
 
 	public Camera mainCamera;
+	public CameraManager mainCameraManager;
 	public Camera combatCamera;
 
 	private CombatManager combatManager;
+	private Vector3 playersCameraPosition;
 
 	private void Start()
     {
@@ -83,6 +85,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		combatManager.combatOver = CombatOver;
 		combatManager.characterDead = CharacterDead;
 
+		mainCameraManager = mainCamera.GetComponent<CameraManager>();
 
 		battleState = BattleState.PlayerTurn;
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
@@ -230,6 +233,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 			if (AllyTurnOver()) {
 				battleState = BattleState.EnemyTurn;
+				playersCameraPosition = mainCameraManager.CurrentCameraPosition();
 			}
 
 		}
@@ -249,6 +253,7 @@ public abstract class BaseGridManager : MonoBehaviour
 				ResetEnemyCanMove();
 				ResetAllyCanMove();
 				battleState = BattleState.PlayerTurn;
+				mainCameraManager.MoveToPosition(playersCameraPosition);
             }
 
 		}
@@ -312,6 +317,8 @@ public abstract class BaseGridManager : MonoBehaviour
 			movementData.currentTile = tile;
 			movementData.selectedCharacter = character;
 			movementData.selectedCharacterStats = characterStats;
+
+			mainCameraManager.MoveToShow(tile.LocalPlace);
 
 			(BattlefieldTile, BattlefieldTile) movementDecision = characterStats.getMovementDecision(tile);
 			
