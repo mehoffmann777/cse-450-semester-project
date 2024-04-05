@@ -11436,6 +11436,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1050373735009651335, guid: 2b4313550293544e6bc985974dc3ffa4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 1050373735009651335, guid: 2b4313550293544e6bc985974dc3ffa4, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 1177447248441787723, guid: 2b4313550293544e6bc985974dc3ffa4, type: 3}
       propertyPath: m_Name
       value: Canvas_Combat
@@ -11444,6 +11452,14 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 787826356}
+    - target: {fileID: 5026732911316944363, guid: 2b4313550293544e6bc985974dc3ffa4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 5026732911316944363, guid: 2b4313550293544e6bc985974dc3ffa4, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 18
+      objectReference: {fileID: 0}
     - target: {fileID: 5989721476684439123, guid: 2b4313550293544e6bc985974dc3ffa4, type: 3}
       propertyPath: m_Pivot.x
       value: 0
