@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class mapShipMovement : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public class mapShipMovement : MonoBehaviour
     public float speed;
     public float rotation_speed;
     [SerializeField] private GameObject instructionsPanel;
+    [SerializeField] private TextMeshProUGUI progressText;
+    [SerializeField] GameObject winPanel;
 
     private Graphic instructionsPanelGraphic;
 
@@ -23,6 +27,20 @@ public class mapShipMovement : MonoBehaviour
         // Start is called before the first frame update
     void Start()
     {
+        //set the progress metric on the bar
+        //numbers are hard coded for a 5 island game -- should be relatively simple to adjust or to make dynamic
+        // would just have to change the * 20 in the texting setting thing 
+        int progressPercent = PlayerPrefs.GetInt("Levels Complete", 0);
+        progressText.text = "Progress: " + (PlayerPrefs.GetInt("Levels Complete") * 20).ToString() + "%";
+
+        if (progressPercent == 100)
+        {
+            winPanel.SetActive(true);
+        }
+        else
+        {
+            winPanel.SetActive(false);
+        }
         _rb = GetComponent<Rigidbody2D>();
         idleTimer = 0;
         instructionsPanelGraphic = instructionsPanel.GetComponent<Graphic>();
@@ -70,6 +88,15 @@ public class mapShipMovement : MonoBehaviour
             //instructionsPanelGraphic.CrossFadeAlpha(0, 1, false);
             instructionsPanel.SetActive(false);
         }
+    }
+    public void CloseWinPanel()
+    {
+        winPanel.SetActive(false);
+    }
+    public void ResetGameAfterWin()
+    {
+        PlayerPrefs.DeleteAll();
+        SceneManager.LoadScene("MapTesting");
     }
 
 
