@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class StatMenuManager : MonoBehaviour
@@ -7,7 +8,8 @@ public class StatMenuManager : MonoBehaviour
 
     public GameObject menu;
 
-    // Image 
+    // Image
+    public Image image;
     public TMPro.TextMeshProUGUI nameBadge;
 
     public TMPro.TextMeshProUGUI hpValueDisplay;
@@ -21,6 +23,7 @@ public class StatMenuManager : MonoBehaviour
 
     public void UpdateForCharacterStats(CharacterStats stats)
     {
+        image.sprite = stats.characterImage;
         nameBadge.text = stats.characterName;
         hpValueDisplay.text = stats.health + " / " + stats.startingHealth;
 

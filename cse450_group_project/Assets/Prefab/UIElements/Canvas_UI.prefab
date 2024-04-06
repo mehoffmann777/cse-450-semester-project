@@ -2285,6 +2285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu: {fileID: 5148620171640000474}
+  image: {fileID: 4479013621118250464}
   nameBadge: {fileID: 2243596376902620555}
   hpValueDisplay: {fileID: 5922126811553015789}
   strValueDisplay: {fileID: 1037848607515186208}

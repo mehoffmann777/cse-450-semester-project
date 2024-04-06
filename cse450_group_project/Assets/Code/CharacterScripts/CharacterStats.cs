@@ -16,6 +16,7 @@ public enum CharacterTeam
 
 public class CharacterStats : MonoBehaviour
 {
+    public Sprite characterImage;
     public string characterName = "Grunt";
     public int startingHealth;
     public int health;

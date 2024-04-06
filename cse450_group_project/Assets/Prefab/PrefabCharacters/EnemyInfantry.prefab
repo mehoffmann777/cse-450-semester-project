@@ -101,6 +101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterImage: {fileID: 21300000, guid: 2709a21cb8f9245ee909c327017e0926, type: 3}
   characterName: Grunt
   startingHealth: 10
   health: 10
