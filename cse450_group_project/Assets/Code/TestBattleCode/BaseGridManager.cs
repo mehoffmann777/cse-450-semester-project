@@ -599,6 +599,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		CharacterTurnOver();
 
 		characterMovementState = CharacterMovementState.NoCharacterSelected;
+		movementData.selectedCharacterStats.clicked = false;
 		movementData.Reset();
 		movementMenu.SetActive(false);
 
@@ -706,7 +707,7 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	private void MoveCharacterTo(Vector3 location) {
 		location.x += 0.5f;
-		location.y += 0.5f;
+		location.y += 0f;
 		location.z = -1;
 
 		movementData.selectedCharacter.transform.position = location;
@@ -718,7 +719,7 @@ public abstract class BaseGridManager : MonoBehaviour
 	private void MoveCharacterBackTo(Vector3 location)
 	{
 		location.x += 0.5f;
-		location.y += 0.5f;
+		location.y += 0f;
 		location.z = -1;
 
 		movementData.selectedCharacter.transform.position = location;
@@ -812,7 +813,7 @@ public abstract class BaseGridManager : MonoBehaviour
 		GetMovementDecision movementDecision = info.decisionPattern;
 
 
-		Vector3 spawnLocation = new Vector3(x + 0.5f, y + 0.5f, -1);
+		Vector3 spawnLocation = new Vector3(x + 0.5f, y, -1);
 		Vector3Int tileLocation = new Vector3Int(x, y, 0);
 
 		var tiles = GridData.instance.tiles; // This is our Dictionary of tiles
