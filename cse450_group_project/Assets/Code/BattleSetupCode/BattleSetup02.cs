@@ -34,7 +34,6 @@ public class BattleSetup02 : BaseGridManager
 
     public override bool BattleIsWon()
     {
-        return true;
         BattleState battleState = GetBattleState();
 
         // Must end turn with all people there
