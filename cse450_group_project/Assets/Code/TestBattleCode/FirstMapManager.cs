@@ -20,6 +20,11 @@ public class FirstMapManager : BaseGridManager
 
     }
 
+    public override string GetLevelPlayerPrefKey()
+    {
+        throw new System.NotImplementedException();
+    }
+
 
 
     //public struct CharacterSetupInfo

@@ -11,6 +11,12 @@ public class BattleSetup01 : BaseGridManager
     public GameObject allyInfantry;
     public GameObject allyRanged;
 
+    public override string GetLevelPlayerPrefKey()
+    {
+        return "Island0";
+    }
+
+
     public override List<CharacterSetupInfo> GetEnemySetupPattern()
     {
         return new List<CharacterSetupInfo>

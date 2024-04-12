@@ -213,6 +213,8 @@ public abstract class BaseGridManager : MonoBehaviour
 		}
 	}
 
+	public abstract string GetLevelPlayerPrefKey();
+
 	private void Update()
 	{
 		CheckWinLossConditions();
@@ -226,6 +228,9 @@ public abstract class BaseGridManager : MonoBehaviour
         {
 			resultMenuManager.PlayerWon();
 
+			//Set PlayerPref to mark level complete
+			string playerPrefKey = this.GetLevelPlayerPrefKey();
+			PlayerPrefs.SetInt(playerPrefKey, 1);
 		}
 
 		if (battleState == BattleState.Lost && !resultMenuManager.gameObject.activeSelf)
