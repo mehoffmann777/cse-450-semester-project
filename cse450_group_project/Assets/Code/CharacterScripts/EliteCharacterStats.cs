@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class EliteCharacterStatus : MonoBehaviour
 {
+    public bool buffApplied = false;
+
     void applyBuff(string stat, int buff)
     {
-        // make a stats array with all stats
-        CharacterStats stats = GetComponent<CharacterStats>();
+        if (!buffApplied)
+        {
+            CharacterStats stats = GetComponent<CharacterStats>();
 
-        // traverse array and add the buff to the correct stat
+            stats.strength += 2;
+            stats.defense += 1;
+            buffApplied = true;
+        }
     }
 }
