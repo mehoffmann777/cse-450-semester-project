@@ -26,8 +26,9 @@ public abstract class BaseGridManager : MonoBehaviour
 	public FullScreenMenuManager fullScreenMenuManager;
 	public GameObject movementMenu;
 	private Button attackButton;
+	private bool isShadingEnemyMovement;
+	private List<BattlefieldTile> enemyMovementShadedTiles;
 
-	
 	private Dictionary<BattlefieldTile, BattlefieldMovementTileTag> movementLocations = new();
 
 	private List<GameObject> enemyCharacters = new();
@@ -460,6 +461,29 @@ public abstract class BaseGridManager : MonoBehaviour
                 }
             }
 
+			// implicitly not attacking
+			if (battleState == BattleState.PlayerTurn && stats.Team == CharacterTeam.Enemy)
+            {
+
+				Vector3 enemyLoc = stats.gameObject.transform.position;
+
+				var worldPoint = new Vector3Int(Mathf.FloorToInt(enemyLoc.x), Mathf.FloorToInt(enemyLoc.y), 0);
+				var tiles = GridData.instance.tiles; // This is our Dictionary of tiles
+
+				BattlefieldTile enemyTile;
+				if (tiles.TryGetValue(worldPoint, out enemyTile))
+				{
+					enemyMovementShadedTiles = MovementUtils.MovementDictionaryToValidList(MovementUtils.MovementReachableTiles(enemyTile, stats));
+
+					ShadeTilesInListForEnemyMovement(enemyMovementShadedTiles);
+					isShadingEnemyMovement = true;
+				}
+
+
+
+			}
+
+
 			cornerDisplay.ShowCharacterStats(stats);
 			
 		}
@@ -478,6 +502,12 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	public void MouseLeaveStatCharacter()
     {
+		if (isShadingEnemyMovement)
+        {
+			isShadingEnemyMovement = false;
+			UnshadeTilesInListForEnemyMovement(enemyMovementShadedTiles);
+		}
+
 
 		if (cornerDisplay)
 		{
@@ -781,6 +811,43 @@ public abstract class BaseGridManager : MonoBehaviour
             tile.TilemapMember.SetColor(tile.LocalPlace, Color.white);
         }
     }
+
+	private void ShadeTilesInListForEnemyMovement(List<BattlefieldTile> tileList)
+    {
+		foreach (var tile in tileList)
+		{
+			Color changeColor = new Color(0.3f, 0.4f, 0.95f, 1);
+
+			tile.TilemapMember.SetTileFlags(tile.LocalPlace, TileFlags.None);
+			tile.TilemapMember.SetColor(tile.LocalPlace, changeColor);
+
+		}
+	}
+
+	private void UnshadeTilesInListForEnemyMovement(List<BattlefieldTile> tileList)
+	{
+		foreach (var tile in tileList)
+		{
+			Color changeColor = new Color(1, 1, 1, 1);
+
+			BattlefieldMovementTileTag value;
+			if (movementLocations.TryGetValue(tile, out value))
+            {
+				if (value == BattlefieldMovementTileTag.Reachable)
+				{
+					changeColor = new Color(0.4f, 0.5f, 1, 1);
+				}
+				else if (value == BattlefieldMovementTileTag.Attackable)
+				{
+					changeColor = new Color(1, 0.4f, 0.4f, 1);
+				}
+			}
+
+			tile.TilemapMember.SetTileFlags(tile.LocalPlace, TileFlags.None);
+			tile.TilemapMember.SetColor(tile.LocalPlace, changeColor);
+
+		}
+	}
 
 	private void ShadeTiles()
     {
