@@ -251,6 +251,8 @@ public abstract class BaseGridManager : MonoBehaviour
 			if (AllyTurnOver()) {
 				battleState = BattleState.EnemyTurn;
 				playersCameraPosition = mainCameraManager.CurrentCameraPosition();
+				characterMovementState = CharacterMovementState.NoCharacterSelected;
+				movementData.Reset();
 			}
 
 		}
@@ -269,6 +271,8 @@ public abstract class BaseGridManager : MonoBehaviour
 				turnUI.text = "Turn " + (++turnCount).ToString();
 				ResetEnemyCanMove();
 				ResetAllyCanMove();
+				movementData.Reset();
+				characterMovementState = CharacterMovementState.NoCharacterSelected;
 				battleState = BattleState.PlayerTurn;
 				mainCameraManager.MoveToPosition(playersCameraPosition);
             }
@@ -326,10 +330,7 @@ public abstract class BaseGridManager : MonoBehaviour
 			if (!characterStats.CanMove) { continue; }
 
 			// trigger movement animation
-			if (characterStats.Team == CharacterTeam.Enemy)
-			{
-				characterStats.clicked = true;
-			}
+			characterStats.clicked = true;
 
 			movementData.currentTile = tile;
 			movementData.selectedCharacter = character;
@@ -362,7 +363,7 @@ public abstract class BaseGridManager : MonoBehaviour
 				int distance = (int) MovementUtils.ManhattanDistance(attackingTile.LocalPlace, movementData.potentialTile.LocalPlace);
 
 				cornerDisplay.HideMenu();
-				//combatManager.StartCombat(attackingTile.Character, movementData.selectedCharacter);
+
 				combatManager.StartCombat(movementData.selectedCharacter, attackingTile.Character, distance);
 			}
 			else
@@ -370,7 +371,6 @@ public abstract class BaseGridManager : MonoBehaviour
 				WaitMovement();
             }
 
-			characterStats.clicked = false;
 			// After first character moved, we are done. This function must be called multiple times
 			break;
 		}
@@ -662,13 +662,13 @@ public abstract class BaseGridManager : MonoBehaviour
 
 					MoveMenuTo(menuPoint);
 
-					// TODO  We need a movementMenu manager instead of this
 					attackButton.interactable = true;
 					movementMenu.SetActive(true);
 					characterMovementState = CharacterMovementState.MoveLocationSet;
 				}
 				else
 				{
+					movementData.selectedCharacterStats.clicked = false;
 					characterMovementState = CharacterMovementState.NoCharacterSelected;
 					cornerDisplay.HideMenu();
 					movementData.Reset();

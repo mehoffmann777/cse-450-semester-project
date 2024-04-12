@@ -110,6 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterImage: {fileID: 0}
   characterName: Boss
   startingHealth: 20
   health: 20
@@ -121,6 +122,6 @@ MonoBehaviour:
   minRangeInclusive: 1
   maxRangeInclusive: 1
   CanMove: 1
-  Team: 1
+  Team: 0
   inCombat: 0
   clicked: 0

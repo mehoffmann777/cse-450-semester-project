@@ -1369,6 +1369,7 @@ GameObject:
   - component: {fileID: 770763674}
   - component: {fileID: 770763673}
   - component: {fileID: 770763672}
+  - component: {fileID: 770763675}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1450,6 +1451,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &770763675
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770763671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7441977a298b04e16a1dd8ee4eab8273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizMax: 0
+  horizMin: 0
+  vertMax: 0
+  vertMin: 0
+  horizSpeed: 5
+  vertSpeed: 5
 --- !u!1 &787826355
 GameObject:
   m_ObjectHideFlags: 0
@@ -3719,7 +3738,7 @@ MonoBehaviour:
   fullScreenMenuManager: {fileID: 1726986064855537111}
   movementMenu: {fileID: 1720331609}
   mainCamera: {fileID: 770763673}
-  mainCameraManager: {fileID: 0}
+  mainCameraManager: {fileID: 770763675}
   combatCamera: {fileID: 787826356}
   enemyInfantry: {fileID: 1744878082758574427, guid: 17329ff58138542c1ad24f3bb0f5bce1, type: 3}
   enemyRanged: {fileID: 1744878082758574427, guid: dc860b6670eb24203981658e1d8b78e7, type: 3}
