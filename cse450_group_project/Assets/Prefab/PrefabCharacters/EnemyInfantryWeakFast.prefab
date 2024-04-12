@@ -103,10 +103,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImage: {fileID: 21300000, guid: 2709a21cb8f9245ee909c327017e0926, type: 3}
   characterName: Grunt
-  startingHealth: 7
-  health: 7
+  startingHealth: 13
+  health: 13
   strength: 7
-  defense: 1
+  defense: 3
   dex: 6
   luck: 4
   movement: 5

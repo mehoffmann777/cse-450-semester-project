@@ -101,9 +101,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImage: {fileID: 21300000, guid: 7acba3391a34242a0ae784f2cdb4bb10, type: 3}
   characterName: Amanda
-  startingHealth: 14
-  health: 14
-  strength: 6
+  startingHealth: 27
+  health: 27
+  strength: 9
   defense: 7
   dex: 3
   luck: 3

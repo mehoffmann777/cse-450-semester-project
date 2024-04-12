@@ -50,8 +50,8 @@ public class CombatManager : MonoBehaviour
         PredictCombatResults results = new();
 
         // does not account for crits bc that's rolled on attack
-        results.AttackerDamageIfHit = attackerStats.strength - defenderStats.defense;
-        results.DefenderDamageIfHit = defenderStats.strength - attackerStats.defense;
+        results.AttackerDamageIfHit = (int) Mathf.Max(0f, attackerStats.strength - defenderStats.defense);
+        results.DefenderDamageIfHit = (int) Mathf.Max(0f, defenderStats.strength - attackerStats.defense);
 
         // will rework stats to factor in both accuracy + opponent's something to determine dodge
         // dodge is just rolled as a set 0-10 on attack rn, but this could be changed 
@@ -164,7 +164,7 @@ public class CombatManager : MonoBehaviour
             bool crit = attackerCritRoll < combatCalculations.AttackerCritChance;
             int damage = combatCalculations.AttackerDamageIfHit * (crit ? 2 : 1);
             enemyStats.health -= damage;
-            enemyHeart.fillAmount = ((float)enemyStats.health / (float)enemyStats.startingHealth) + 0.2f;
+            enemyHeart.fillAmount = ((float)enemyStats.health / (float)enemyStats.startingHealth);
             attackText.text = attackerName + (crit ? "Critical " : "") + "Hit " + damage;
             
         }
@@ -190,7 +190,7 @@ public class CombatManager : MonoBehaviour
                 bool crit = defenderCritRoll < combatCalculations.DefenderCritChance;
                 int damage = combatCalculations.DefenderDamageIfHit * (crit ? 2 : 1);
                 allyStats.health -= damage;
-                allyHeart.fillAmount = ((float)allyStats.health / (float)allyStats.startingHealth) + 0.2f;
+                allyHeart.fillAmount = ((float)allyStats.health / (float)allyStats.startingHealth);
                 attackText.text = defenderName + (crit ? "Critical " : "") + "Hit " + damage;
             } else
             {

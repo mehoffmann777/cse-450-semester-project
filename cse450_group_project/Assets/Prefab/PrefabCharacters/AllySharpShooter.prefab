@@ -101,9 +101,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImage: {fileID: 21300000, guid: 7acba3391a34242a0ae784f2cdb4bb10, type: 3}
   characterName: George
-  startingHealth: 8
-  health: 8
-  strength: 7
+  startingHealth: 22
+  health: 22
+  strength: 9
   defense: 3
   dex: 7
   luck: 9

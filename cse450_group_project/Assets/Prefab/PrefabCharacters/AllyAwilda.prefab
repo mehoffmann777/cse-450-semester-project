@@ -103,10 +103,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImage: {fileID: 21300000, guid: 2690231e34f9447aa9bad05c8f747ea4, type: 3}
   characterName: Awilda
-  startingHealth: 15
-  health: 15
-  strength: 8
-  defense: 4
+  startingHealth: 30
+  health: 30
+  strength: 12
+  defense: 5
   dex: 7
   luck: 8
   movement: 6
