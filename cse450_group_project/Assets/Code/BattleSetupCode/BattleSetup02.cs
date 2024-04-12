@@ -12,7 +12,9 @@ public class BattleSetup02 : BaseGridManager
     public GameObject enemyRangedWeak;
 
     public GameObject allyInfantry;
-    public GameObject allyRanged;
+    public GameObject allyRogue;
+    public GameObject AllySharpShooter;
+    public GameObject allyAwilda;
 
     private int winZoneMinX = 6;
     private int winZoneMaxX = 8;
@@ -213,17 +215,17 @@ public class BattleSetup02 : BaseGridManager
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),
             new CharacterSetupInfo(
-                allyInfantry,
+                allyRogue,
                 -16, -5,
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),
             new CharacterSetupInfo(
-                allyRanged,
+                allyAwilda,
                 -16, -6,
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),
              new CharacterSetupInfo(
-                allyRanged,
+                AllySharpShooter,
                 -14, -4,
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),

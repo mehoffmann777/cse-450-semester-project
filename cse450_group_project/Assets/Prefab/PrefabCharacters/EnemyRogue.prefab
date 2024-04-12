@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5668496726391297848}
   - component: {fileID: -2832533676417534112}
   m_Layer: 0
-  m_Name: AllyRange
+  m_Name: EnemyRogue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -76,12 +76,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 2068313656, guid: 61706e2532a76402ba64667c3b55818a, type: 3}
+  m_Sprite: {fileID: -716807003, guid: 8f3a87922f87948b0881076a0fa0d4c1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.875, y: 0.9375}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -99,19 +99,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796f379f2c7954d87bd3379412833dcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterImage: {fileID: 21300000, guid: 2690231e34f9447aa9bad05c8f747ea4, type: 3}
-  characterName: Reina Range
-  startingHealth: 10
-  health: 10
-  strength: 8
-  defense: 2
-  dex: 7
-  luck: 8
-  movement: 7
-  minRangeInclusive: 2
-  maxRangeInclusive: 4
+  characterImage: {fileID: 21300000, guid: 2709a21cb8f9245ee909c327017e0926, type: 3}
+  characterName: Grunt
+  startingHealth: 7
+  health: 7
+  strength: 5
+  defense: 3
+  dex: 8
+  luck: 6
+  movement: 6
+  minRangeInclusive: 1
+  maxRangeInclusive: 2
   CanMove: 1
-  Team: 0
+  Team: 1
   inCombat: 0
   clicked: 0
 --- !u!114 &5668496726391297848
@@ -158,16 +158,16 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.5}
+  m_Offset: {x: 0, y: 0.46875}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
     oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    newSize: {x: 0.875, y: 0.9375}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.875, y: 0.9375}
   m_EdgeRadius: 0

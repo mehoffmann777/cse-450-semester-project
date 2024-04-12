@@ -7,9 +7,11 @@ public class BattleSetup01 : BaseGridManager
 
 	public GameObject enemyInfantry;
     public GameObject enemyRanged;
+    public GameObject enemyRogue;
 
     public GameObject allyInfantry;
-    public GameObject allyRanged;
+    public GameObject allyAwilda;
+    public GameObject allyRogue;
 
     public override string GetLevelPlayerPrefKey()
     {
@@ -37,7 +39,7 @@ public class BattleSetup01 : BaseGridManager
                 enemyInfantry,
                 "Pete Peter",
                 16, -6,
-                EnemyMovementPattern.AttackMinHealth
+                EnemyMovementPattern.MaximizeTotalDamageImmediate
             ),
             new CharacterSetupInfo(
                 enemyInfantry,
@@ -46,10 +48,10 @@ public class BattleSetup01 : BaseGridManager
                 EnemyMovementPattern.MaximizeTotalDamageImmediate
             ),
             new CharacterSetupInfo(
-                enemyInfantry,
+                enemyRogue,
                 "Tom Thomas",
                 15, -5,
-                EnemyMovementPattern.AttackMinHealth
+                EnemyMovementPattern.MaximizeTotalDamageImmediate
             ),
             new CharacterSetupInfo(
                 enemyRanged,
@@ -71,12 +73,12 @@ public class BattleSetup01 : BaseGridManager
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),
             new CharacterSetupInfo(
-                allyInfantry,
+                allyRogue,
                 -16, -5,
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),
             new CharacterSetupInfo(
-                allyRanged,
+                allyAwilda,
                 -16, -6,
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),

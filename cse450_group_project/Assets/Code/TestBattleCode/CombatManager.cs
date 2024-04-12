@@ -65,8 +65,8 @@ public class CombatManager : MonoBehaviour
         float attackerCritPremium = attackerStats.luck - defenderStats.luck + (0.25f * attackerStats.dex);
         float defenderCritPremium = defenderStats.luck - attackerStats.luck + (0.25f * defenderStats.dex);
 
-        results.AttackerCritChance = StatToPercentCustomSigmoid(attackerCritPremium) * 0.05f;
-        results.DefenderCritChance = StatToPercentCustomSigmoid(defenderCritPremium) * 0.05f;
+        results.AttackerCritChance = StatToCustomSigmoidCrit(attackerCritPremium);
+        results.DefenderCritChance = StatToCustomSigmoidCrit(defenderCritPremium);
 
         results.AttackerHealth = attackerStats.health - results.DefenderDamageIfHit;
         results.DefenderHealth = defenderStats.health - results.AttackerDamageIfHit;
@@ -85,6 +85,14 @@ public class CombatManager : MonoBehaviour
         float valTransform =  (statVal + 5.5f) / 3f;
         float increaseOverMin = ((1 - minVal) / (1.0f + Mathf.Exp(-valTransform)));
         return minVal + increaseOverMin;
+    }
+
+    private static float StatToCustomSigmoidCrit(float statVal)
+    {
+        const float minVal = 0.01f;
+        float valTransform = (statVal - 6f) / 2.5f;
+        float increaseOverMin = ((1 - minVal) / (1.0f + Mathf.Exp(-valTransform)));
+        return 0.15f * (minVal + increaseOverMin);
     }
 
     public void StartCombat(GameObject ally, GameObject enemy, int manhattanDistanceApart)

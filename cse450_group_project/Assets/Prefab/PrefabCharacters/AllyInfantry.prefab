@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterImage: {fileID: 21300000, guid: 7acba3391a34242a0ae784f2cdb4bb10, type: 3}
-  characterName: Ian Infantry
+  characterName: Ian
   startingHealth: 10
   health: 10
   strength: 10
