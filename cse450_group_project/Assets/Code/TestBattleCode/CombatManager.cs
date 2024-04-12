@@ -112,13 +112,10 @@ public class CombatManager : MonoBehaviour
         enemySprite = enemy.GetComponent<SpriteRenderer>();
         allySprite = ally.GetComponent<SpriteRenderer>();
 
-        //allySprite.sprite = allyCombatSprite;
-        //enemySprite.sprite = enemyCombatSprite;
         enemySprite.flipX = true;
     
         Vector3 originalAllyPos = ally.transform.position;
         Vector3 originalEnemyPos = enemy.transform.position;
-
 
         ally.transform.position = new Vector2(125, 0);
         enemy.transform.position = new Vector2(130, 0);
@@ -129,13 +126,10 @@ public class CombatManager : MonoBehaviour
         allyStats.inCombat = true;
         enemyStats.inCombat = true;
 
-        // coroutine is so I can use wait in attack, otherwise it cuts back
-        // to the grid before you can watch the combat
         StartCoroutine(Attack(ally, enemy, originalAllyPos, originalEnemyPos, manhattanDistanceApart));
         
     }
 
-    // this function is HUGE and I'll prob break it up
     public IEnumerator Attack(GameObject ally, GameObject enemy, Vector3 originalAllyPos, Vector3 originalEnemyPos, int manhattanDistanceApart)
     {
 
@@ -215,8 +209,6 @@ public class CombatManager : MonoBehaviour
         }
 
 
-        //allySprite.sprite = allyGridSprite;
-        //enemySprite.sprite = enemyGridSprite;
         enemySprite.flipX = false;
         ally.transform.position = originalAllyPos;
         enemy.transform.position = originalEnemyPos;

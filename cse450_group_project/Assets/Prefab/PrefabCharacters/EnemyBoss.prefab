@@ -111,9 +111,11 @@ MonoBehaviour:
   minRangeInclusive: 1
   maxRangeInclusive: 3
   CanMove: 1
+  isBoss: 1
   Team: 1
   inCombat: 0
   clicked: 0
+  buffApplied: 0
 --- !u!114 &5668496726391297848
 MonoBehaviour:
   m_ObjectHideFlags: 0
