@@ -104,19 +104,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterImage: {fileID: 21300000, guid: 7acba3391a34242a0ae784f2cdb4bb10, type: 3}
   characterName: Regina
-  startingHealth: 20
-  health: 20
-  strength: 7
+  startingHealth: 17
+  health: 17
+  strength: 12
   defense: 3
-  dex: 11
+  dex: 12
   luck: 10
-  movement: 6
+  movement: 7
   minRangeInclusive: 1
   maxRangeInclusive: 2
   CanMove: 1
+  isBoss: 0
   Team: 0
   inCombat: 0
   clicked: 0
+  buffApplied: 0
 --- !u!114 &5668496726391297848
 MonoBehaviour:
   m_ObjectHideFlags: 0

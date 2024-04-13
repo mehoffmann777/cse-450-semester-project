@@ -6,9 +6,7 @@ public class BattleSetup03 : BaseGridManager
 {
 
     public GameObject enemyInfantry;
-    public GameObject enemyInfantryWeakAndFast;
     public GameObject enemyRanged;
-    public GameObject enemyRangedWeak;
     public GameObject enemyBoss;
     public GameObject enemyRogue;
     public GameObject enemyDefense;
@@ -50,7 +48,7 @@ public class BattleSetup03 : BaseGridManager
                 EnemyMovementPattern.MaximizeTotalDamageImmediate
             ),
             new CharacterSetupInfo(
-                enemyRangedWeak,
+                enemyRanged,
                 "Jamie",
                 14, 14,
                 EnemyMovementPattern.MaximizeTotalDamageImmediate
@@ -131,7 +129,7 @@ public class BattleSetup03 : BaseGridManager
             ),
             new CharacterSetupInfo(
                 allyDefenseBig,
-                -2, 12,
+                -1, 9,
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),
             new CharacterSetupInfo(
