@@ -33,10 +33,17 @@ public class mapShipMovement : MonoBehaviour
         //set the progress metric on the bar
         //numbers are hard coded for a 5 island game -- should be relatively simple to adjust or to make dynamic
         // would just have to change the * 20 in the texting setting thing 
-        int progressPercent = PlayerPrefs.GetInt("Levels Complete", 0);
-        progressText.text = "Progress: " + (PlayerPrefs.GetInt("Levels Complete") * 20).ToString() + "%";
+     //   int progressPercent = PlayerPrefs.GetInt("Levels Complete", 0);
+        int levelOne = PlayerPrefs.GetInt("Island0", 0);
+        int levelTwo = PlayerPrefs.GetInt("Island1", 0);
+        int levelThree = PlayerPrefs.GetInt("Island2", 0);
+        int levelFour = PlayerPrefs.GetInt("Island3", 0);
+        int progressNum = levelOne + levelTwo + levelThree + levelFour;
+        string progressPercent = (progressNum * 25).ToString() + "%";
 
-        if (progressPercent == 100)
+        progressText.text = "Progress: " + progressPercent;
+
+        if (progressNum*25 == 100)
         {
             winPanel.SetActive(true);
         }
