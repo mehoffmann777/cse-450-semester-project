@@ -38,12 +38,14 @@ public class mapShipMovement : MonoBehaviour
         int levelTwo = PlayerPrefs.GetInt("Island1", 0);
         int levelThree = PlayerPrefs.GetInt("Island2", 0);
         int levelFour = PlayerPrefs.GetInt("Island3", 0);
-        int progressNum = levelOne + levelTwo + levelThree + levelFour;
-        string progressPercent = (progressNum * 25).ToString() + "%";
+        int levelFive = PlayerPrefs.GetInt("Island4", 0);
+
+        int progressNum = levelOne + levelTwo + levelThree + levelFour + levelFive;
+        string progressPercent = (progressNum * 20).ToString() + "%";
 
         progressText.text = "Progress: " + progressPercent;
 
-        if (progressNum*25 == 100)
+        if (progressNum*20 == 100)
         {
             winPanel.SetActive(true);
         }

@@ -211,7 +211,7 @@ public class BattleSetup02 : BaseGridManager
         {
             new CharacterSetupInfo(
                 allyInfantry,
-                -13, -7,
+                -13, -5,
                 EnemyMovementPattern.TowardsPlayerEnemyMovementWithAttack
             ),
             new CharacterSetupInfo(

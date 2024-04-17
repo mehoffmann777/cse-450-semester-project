@@ -19,7 +19,7 @@ public class StatsMenuMouseOver : MonoBehaviour
    
     public void OnMouseOver()
     {
-        if (stats.Team == CharacterTeam.Ally && !stats.inCombat)
+        if (stats != null && stats.Team == CharacterTeam.Ally && !stats.inCombat)
         {
             GetComponent<SpriteRenderer>().color = new Color(0.4f, 0.4f, 0.6f, 1);
         }
@@ -28,7 +28,7 @@ public class StatsMenuMouseOver : MonoBehaviour
 
     public void OnMouseExit()
     {
-        if (stats.CanMove)
+        if (stats != null && stats.CanMove)
         {
             GetComponent<SpriteRenderer>().color = new Color(1,1,1,1);
         }

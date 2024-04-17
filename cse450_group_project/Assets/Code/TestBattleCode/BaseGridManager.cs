@@ -437,6 +437,8 @@ public abstract class BaseGridManager : MonoBehaviour
 
 	public void MouseOverStats(CharacterStats stats)
     {
+		if (stats == null) { return; }
+
 		if (stats.inCombat) { return; }
 
 		if (cornerDisplay)
