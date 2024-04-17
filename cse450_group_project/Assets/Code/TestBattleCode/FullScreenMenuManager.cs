@@ -10,18 +10,24 @@ public class FullScreenMenuManager : MonoBehaviour
 {
 
     public TMP_Text winLoseText;
+
+    public GameObject instructionsGameObject;
+
     public Button backToMapButton;
     public Button restartButton;
-    public Button resumeLevel;
+    public Button resumeLevelButton;
+    public Button howToPlayButton;
 
     // Start is called before the first frame update
     void Start()
     {
         gameObject.SetActive(false);
+        instructionsGameObject.SetActive(false);
 
         backToMapButton.onClick.AddListener(BackToMap);
+        howToPlayButton.onClick.AddListener(ShowInstructions);
         restartButton.onClick.AddListener(ReloadLevel);
-        resumeLevel.onClick.AddListener(Hide);
+        resumeLevelButton.onClick.AddListener(Hide);
 
     }
 
@@ -47,6 +53,17 @@ public class FullScreenMenuManager : MonoBehaviour
     void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    void ShowInstructions()
+    {
+        instructionsGameObject.SetActive(true);
+    }
+
+
+    public void HideInstructions()
+    {
+        instructionsGameObject.SetActive(false);
     }
 
 }

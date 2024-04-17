@@ -169,6 +169,8 @@ public class EnemyMovementPattern
 
 			MovementUtils.TileInSetToGoalReturn movementDataReturn = MovementUtils.TileInSetClosestOnMinPathToAGoal(startTile, movementLocationSet, attackableGoalSet);
 
+			if (movementDataReturn.totalPathDistance == -1) { continue; }
+
 			float turnsForFullPath = Mathf.Ceil(movementDataReturn.totalPathDistance / (float) stats.movement);
 			float discounting = Mathf.Pow(0.4f, turnsForFullPath);
 			float damageInTurns = combatResults.AttackerDamageIfHit * discounting;
