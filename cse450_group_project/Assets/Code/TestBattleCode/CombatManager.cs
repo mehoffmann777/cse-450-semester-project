@@ -53,9 +53,6 @@ public class CombatManager : MonoBehaviour
         results.AttackerDamageIfHit = (int) Mathf.Max(0f, attackerStats.strength - defenderStats.defense);
         results.DefenderDamageIfHit = (int) Mathf.Max(0f, defenderStats.strength - attackerStats.defense);
 
-        // will rework stats to factor in both accuracy + opponent's something to determine dodge
-        // dodge is just rolled as a set 0-10 on attack rn, but this could be changed 
-
         float attackerHitPremium = attackerStats.dex - defenderStats.dex + (0.25f * attackerStats.luck);
         float defenderHitPremium = defenderStats.dex - attackerStats.dex + (0.25f * defenderStats.luck);
 
@@ -207,7 +204,6 @@ public class CombatManager : MonoBehaviour
         {
             characterDead(enemy);
         }
-
 
         enemySprite.flipX = false;
         ally.transform.position = originalAllyPos;
